@@ -36,7 +36,7 @@ export default function FinalCTASection() {
               귀한 시간을 아껴보세요
             </h2>
             <p className="text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
-              구독이 필요 없습니다. 지금 디자인 워크플로우 자동화를 시작하세요.
+              지금 디자인 워크플로우 자동화를 시작하세요.
             </p>
           </div>
 
