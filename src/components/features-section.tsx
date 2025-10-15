@@ -44,7 +44,7 @@ export default function FeaturesSection() {
             <br />
             맞춤형 MCP 도구
           </h2>
-          <p className="text-base text-white/80 max-w-3xl mx-auto">
+          <p className="text-base text-white/80 max-w-3xl mx-auto leading-[1.5]">
             MCP Magic는 크리에이티브들이 디자인 워크플로우를 원활하게 자동화 하여
             <br />
             비할 데 없는 효율성과 생산성을 달성할 수 있도록 지원합니다.
