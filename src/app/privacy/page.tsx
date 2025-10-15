@@ -20,9 +20,9 @@ export default function PrivacyPage() {
 
           <div className="prose prose-invert max-w-none space-y-6">
             <p className="text-white/80 leading-relaxed">
-              This application ("MCP Magic") is a developer tool that integrates
+              This application (&quot;MCP Magic&quot;) is a developer tool that integrates
               with Figma via official APIs. While the app communicates with
-              Figma's servers to access design data, it does not collect, store,
+              Figma&apos;s servers to access design data, it does not collect, store,
               or share your personal information.
             </p>
 
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
               </h3>
               <ul className="space-y-2 text-white/80 list-disc list-inside">
                 <li>
-                  We do not collect any personal information beyond what's
+                  We do not collect any personal information beyond what&apos;s
                   necessary for Figma API integration
                 </li>
                 <li>
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
               </h3>
               <ul className="space-y-2 text-white/80 list-disc list-inside">
                 <li>
-                  The app connects to Figma's official API servers to retrieve
+                  The app connects to Figma&apos;s official API servers to retrieve
                   design information
                 </li>
                 <li>All connections use secure HTTPS protocols</li>
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
 
           <div className="prose prose-invert max-w-none space-y-6">
             <p className="text-white/80 leading-relaxed">
-              이 애플리케이션("MCP Magic")은 Figma 공식 API를 통해 통합되는
+              이 애플리케이션(&quot;MCP Magic&quot;)은 Figma 공식 API를 통해 통합되는
               개발자 도구입니다. 앱이 디자인 데이터에 접근하기 위해 Figma
               서버와 통신하지만, 개인 정보를 수집, 저장 또는 공유하지 않습니다.
             </p>
