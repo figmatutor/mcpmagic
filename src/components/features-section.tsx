@@ -30,7 +30,7 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="min-h-[900px] flex items-center justify-center py-20">
+    <section className="min-h-[700px] flex items-center justify-center py-20">
       <div className="container mx-auto px-4">
         <motion.div 
           className="text-center mb-8"

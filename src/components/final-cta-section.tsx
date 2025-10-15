@@ -15,7 +15,7 @@ export default function FinalCTASection() {
   };
 
   return (
-    <section className="min-h-[900px] flex items-center justify-center py-20">
+    <section className="min-h-[700px] flex items-center justify-center py-20">
       <div className="container mx-auto px-4">
         <motion.div 
           className="max-w-4xl mx-auto text-center space-y-8"
@@ -30,7 +30,7 @@ export default function FinalCTASection() {
           </Badge>
 
           <div>
-            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4 leading-[1.3]">
               MCP Magic으로
               <br />
               귀한 시간을 아껴보세요

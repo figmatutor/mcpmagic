@@ -13,7 +13,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="min-h-[900px] flex items-center justify-center pt-20 pb-16">
+    <section className="min-h-[700px] flex items-center justify-center pt-20 pb-16">
       <div className="container mx-auto px-4">
         <motion.div 
           className="max-w-5xl mx-auto text-center space-y-8"
