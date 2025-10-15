@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Github, ExternalLink, Plus } from "lucide-react";
 
 import {
@@ -40,10 +41,13 @@ export default function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <img 
+          <Image 
             src="/assets/logo.svg" 
             alt="Figma MCP Magic" 
+            width={140}
+            height={28}
             className="h-7 w-auto"
+            priority
           />
         </Link>
 
