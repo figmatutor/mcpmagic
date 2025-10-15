@@ -43,7 +43,7 @@ export default function Header() {
           <img 
             src="/assets/logo.svg" 
             alt="Figma MCP Magic" 
-            className="h-10 w-auto"
+            className="h-7 w-auto"
           />
         </Link>
 

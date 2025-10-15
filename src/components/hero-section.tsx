@@ -105,20 +105,6 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
               Windows용 다운로드
             </Button>
           </div>
-
-          {/* Stats - Muzli Style */}
-          <div className="flex flex-wrap justify-center gap-8 pt-8 text-center">
-            {displayStats.map((stat, index) => (
-              <div key={index}>
-                <div className="text-3xl lg:text-4xl font-bold text-white">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-white/60 mt-1">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>

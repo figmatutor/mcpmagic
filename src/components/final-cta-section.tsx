@@ -40,34 +40,6 @@ export default function FinalCTASection() {
             >
               무료로 시작하기
             </Button>
-            <Button
-              size="lg"
-              className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white text-sm font-semibold rounded-[32px] px-5 h-[40px] border-0 transition-all duration-200"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
-              더 알아보기
-            </Button>
-          </div>
-
-          <div className="pt-8">
-            <div className="flex flex-wrap justify-center gap-8 text-white/80">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">24+</div>
-                <div className="text-sm">준비된 프롬프트</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">5</div>
-                <div className="text-sm">카테고리</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">3</div>
-                <div className="text-sm">언어</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">∞</div>
-                <div className="text-sm">가능성</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
