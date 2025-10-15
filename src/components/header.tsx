@@ -115,7 +115,7 @@ export default function Header() {
                  className="bg-[rgb(58,94,251)] hover:bg-[rgb(48,84,241)] text-white rounded-[32px] px-5 h-9 text-sm font-semibold transition-all duration-200"
                >
                  <Plus className="h-4 w-4" />
-                 프롬프트 추가
+                 피드백 제출
                </Button>
         </div>
       </div>

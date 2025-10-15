@@ -2,11 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BeamsBackground } from "@/components/ui/beams-background";
 
 export default function HeroSection() {
   return (
-    <BeamsBackground intensity="medium" className="pt-20 pb-16">
+    <section className="pt-20 pb-16">
       <div className="container mx-auto px-4 py-12 lg:py-20">
         <div className="max-w-5xl mx-auto text-center space-y-8">
           {/* Muzli Style Badge */}
@@ -38,7 +37,7 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Button
               size="lg"
-              className="bg-[rgb(58,94,251)] hover:bg-[rgb(48,84,241)] text-white text-base font-semibold rounded-[32px] px-14 h-[50px] transition-all duration-200"
+              className="bg-[rgb(58,94,251)] hover:bg-[rgb(48,84,241)] text-white text-base font-semibold rounded-[32px] px-10 h-[50px] transition-all duration-200"
               onClick={() => window.open("https://www.figma.com/community/file/1513759391089024242", "_blank", "noopener,noreferrer")}
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
@@ -49,7 +48,7 @@ export default function HeroSection() {
 
             <Button
               size="lg"
-              className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white text-sm font-semibold rounded-[32px] px-5 h-[40px] border-0 transition-all duration-200"
+              className="bg-transparent hover:bg-white/10 text-white text-base font-semibold rounded-[32px] px-10 h-[50px] border-0 transition-all duration-200"
               onClick={() => window.open("https://www.figma.com/community/file/1513759391089024242", "_blank", "noopener,noreferrer")}
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
@@ -60,6 +59,6 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-    </BeamsBackground>
+    </section>
   );
 }
