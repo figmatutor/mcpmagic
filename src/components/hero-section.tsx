@@ -53,7 +53,7 @@ export default function HeroSection() {
               <DropdownMenuTrigger asChild>
                 <Button
                   size="lg"
-                  className="bg-[#FFFFFF] hover:bg-[#F0F0F0] text-[#121212] text-base font-semibold rounded-[32px] px-10 h-[50px] transition-all duration-200"
+                  className="bg-[#FFFFFF] hover:bg-[#F0F0F0] text-[#121212] text-base font-semibold rounded-[32px] px-5 h-[50px] transition-all duration-200"
                 >
                   바로 사용해보기
                   <ChevronDown className="ml-0 h-4 w-4" />
