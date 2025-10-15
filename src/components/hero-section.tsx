@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BeamsBackground } from "@/components/ui/beams-background";
 import TypeIt from "typeit";
 
 interface StatItem {
@@ -50,11 +51,8 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-black pt-20 pb-16">
-      {/* Dark gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black"></div>
-      
-      <div className="container mx-auto px-4 py-12 lg:py-20 relative z-10">
+    <BeamsBackground intensity="medium" className="pt-20 pb-16">
+      <div className="container mx-auto px-4 py-12 lg:py-20">
         <div className="max-w-5xl mx-auto text-center space-y-8">
           {/* Muzli Style Badge */}
           <div className="inline-block">
@@ -107,6 +105,6 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
           </div>
         </div>
       </div>
-    </section>
+    </BeamsBackground>
   );
 }
