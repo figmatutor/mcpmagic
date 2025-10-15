@@ -22,12 +22,12 @@ export default function Footer() {
               </a>
               <span className="text-white/60">&</span>
               <a
-                href="https://www.linkedin.com/in/yu-chi-tan/"
+                href="https://www.instagram.com/figma_tutor/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-white hover:text-[rgb(58,94,251)] transition-colors"
               >
-                <span className="font-medium">Lucy</span>
+                <span className="font-medium">Figma tutor</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
             </div>
@@ -60,29 +60,6 @@ export default function Footer() {
                     Friends of Figma
                   </div>
                   <div className="text-xs text-white/60">Seoul</div>
-                </div>
-              </a>
-
-              {/* Friends of Figma Taiwan */}
-              <a
-                href="https://friends.figma.com/taiwan/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col items-center gap-3 transition-transform hover:scale-105"
-              >
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-white/20">
-                  <Image
-                    src="/logo/fof-taiwan.jpeg"
-                    alt="Friends of Figma Taiwan"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="text-center">
-                  <div className="text-xs font-medium text-white group-hover:text-[rgb(58,94,251)] transition-colors">
-                    Friends of Figma
-                  </div>
-                  <div className="text-xs text-white/60">Taiwan</div>
                 </div>
               </a>
             </div>
