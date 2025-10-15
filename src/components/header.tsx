@@ -14,7 +14,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import McpLogo from "@/components/mcp-logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const resources = [
