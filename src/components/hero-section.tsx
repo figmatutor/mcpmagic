@@ -1,55 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BeamsBackground } from "@/components/ui/beams-background";
-import TypeIt from "typeit";
 
-interface StatItem {
-  value: string;
-  label: string;
-}
-
-interface HeroSectionProps {
-  stats?: StatItem[];
-}
-
-export default function HeroSection({ stats = [] }: HeroSectionProps) {
-  const typeItRef = useRef<HTMLSpanElement>(null);
-
-  // 기본 통계 데이터
-  const defaultStats: StatItem[] = [
-    { value: "50+", label: "Prompts" },
-    { value: "5", label: "Categories" },
-    { value: "3", label: "Languages" },
-  ];
-
-  // props로 받은 stats가 있으면 사용하고, 없으면 기본값 사용
-  const displayStats = stats.length > 0 ? stats : defaultStats;
-
-  useEffect(() => {
-    if (typeItRef.current) {
-      new TypeIt(typeItRef.current, {
-        speed: 80,
-        waitUntilVisible: true,
-        loop: false,
-      })
-        .type("Design Workflow", { delay: 2500 })
-        .delete(8) // "Workflow" 삭제 (8글자)
-        .type("Tasks", { delay: 2000 })
-        .delete(5) // "Tasks" 삭제 (5글자)
-        .type("Annotations", { delay: 2000 })
-        .delete(11) // "Annotations" 삭제 (11글자)
-        .type("Handoff", { delay: 2000 })
-        .delete(7) // "Handoff" 삭제 (7글자)
-        .type("Documentation", { delay: 2000 })
-        .delete(13) // "Documentation" 삭제 (13글자)
-        .type("with MCP", { delay: 2000 })
-        .go();
-    }
-  }, []);
-
+export default function HeroSection() {
   return (
     <BeamsBackground intensity="medium" className="pt-20 pb-16">
       <div className="container mx-auto px-4 py-12 lg:py-20">
