@@ -58,16 +58,16 @@ export default function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
             크리에이티브의 목소리
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-white/80">
             모든 곳의 디자이너들이 신뢰합니다
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+          <p className="text-sm text-white/60 mt-2">
             만족한 사용자들의 실제 피드백
           </p>
         </div>

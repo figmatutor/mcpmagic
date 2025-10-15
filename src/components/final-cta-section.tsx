@@ -14,7 +14,7 @@ export default function FinalCTASection() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <Badge variant="secondary" className="bg-transparent text-white/80 border-0">
