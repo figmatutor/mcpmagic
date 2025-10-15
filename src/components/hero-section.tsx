@@ -2,12 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
   return (
-    <section className="pt-20 pb-16">
-      <div className="container mx-auto px-4 py-12 lg:py-20">
-        <div className="max-w-5xl mx-auto text-center space-y-8">
+    <section className="min-h-[900px] flex items-center justify-center pt-20 pb-16">
+      <div className="container mx-auto px-4">
+        <motion.div 
+          className="max-w-5xl mx-auto text-center space-y-8"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
           {/* Muzli Style Badge */}
           <div className="inline-block">
             <Badge 
@@ -57,7 +64,7 @@ export default function HeroSection() {
               Windows용 다운로드
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

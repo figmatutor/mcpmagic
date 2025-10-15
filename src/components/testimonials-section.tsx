@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 interface Testimonial {
   name: string;
@@ -58,9 +59,15 @@ export default function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-20">
+    <section className="min-h-[900px] flex items-center justify-center py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
             크리에이티브의 목소리
           </h2>
@@ -70,9 +77,15 @@ export default function TestimonialsSection() {
           <p className="text-sm text-white/60 mt-2">
             만족한 사용자들의 실제 피드백
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           {testimonials.map((testimonial, index) => (
             <Card
               key={index}
@@ -103,7 +116,7 @@ export default function TestimonialsSection() {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
