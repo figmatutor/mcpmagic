@@ -32,11 +32,11 @@ export default function FeaturesSection() {
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
             디자이너를 위한 맞춤형 MCP 도구
           </h2>
-          <p className="text-lg text-white/80 max-w-3xl mx-auto">
+          <p className="text-sm text-white/80 max-w-3xl mx-auto">
             MCP Magic는 크리에이티브들이 디자인 워크플로우를 원활하게 자동화하여
             비할 데 없는 효율성과 생산성을 달성할 수 있도록 지원합니다.
           </p>
@@ -60,7 +60,7 @@ const HoverEffect = ({
   return (
     <div
       className={cn(
-        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 py-10",
+        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 py-5",
         className
       )}
     >

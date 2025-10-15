@@ -26,7 +26,7 @@ export default function HeroSection() {
               <span className="text-white/60">연결하다가 포기하셨나요?</span>
             </h1>
 
-            <p className="text-lg lg:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm text-white/80 max-w-3xl mx-auto leading-relaxed">
               MCP magic으로 클릭 한 번에 연결하고
               <br />
               워크플로우를 간소화 해보세요.

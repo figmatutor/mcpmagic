@@ -64,7 +64,7 @@ export default function TestimonialsSection() {
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
             크리에이티브의 목소리
           </h2>
-          <p className="text-lg text-white/80">
+          <p className="text-sm text-white/80">
             모든 곳의 디자이너들이 신뢰합니다
           </p>
           <p className="text-sm text-white/60 mt-2">
