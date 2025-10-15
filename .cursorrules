@@ -1,0 +1,91 @@
+# MCP Magic 디자인 시스템 (Muzli 기반)
+
+## 컬러 팔레트
+- **Primary CTA**: rgb(58, 94, 251) - 파란색 배경, 흰색 텍스트
+- **배경**: 다크 그라데이션 또는 검은색 기반
+- **텍스트**: 
+  - 주요 텍스트: rgb(255, 255, 255) - 흰색
+  - 보조 텍스트: rgba(255, 255, 255, 0.8) - 반투명 흰색
+  - 비활성 텍스트: rgb(184, 184, 184) - 회색
+- **투명 배경**: rgba(0, 0, 0, 0)
+
+## 버튼 스타일
+
+### Primary CTA 버튼
+```css
+background-color: rgb(58, 94, 251);
+color: rgb(255, 255, 255);
+font-size: 16px;
+padding: 0px 60px;
+border-radius: 32px;
+font-weight: 600;
+height: 50px;
+```
+
+### Ghost 버튼 (보조 버튼)
+```css
+background-color: rgba(0, 0, 0, 0);
+color: rgba(255, 255, 255, 0.8);
+font-size: 14px;
+padding: 0px 20px;
+border-radius: 32px;
+border: 0px solid rgba(255, 255, 255, 0.8);
+font-weight: 600;
+```
+
+### Tab 버튼
+```css
+background-color: rgba(0, 0, 0, 0);
+color: rgb(255, 255, 255); /* active */
+color: rgba(255, 255, 255, 0.8); /* inactive */
+font-size: 14px;
+padding: 10px 16px;
+border-radius: 0px;
+font-weight: 500;
+```
+
+## 입력 필드
+```css
+background-color: rgba(0, 0, 0, 0);
+color: rgba(255, 255, 255, 0.8);
+font-size: 16px;
+padding: 0px 25px 0px 60px;
+border-radius: 30px;
+border: 0px none rgba(255, 255, 255, 0.8);
+```
+
+## 레이블/배지
+```css
+background-color: rgba(0, 0, 0, 0);
+color: rgb(255, 255, 255); /* active */
+color: rgb(184, 184, 184); /* inactive */
+font-size: 14px;
+padding: 0px 24px;
+border-radius: 4px;
+font-weight: 500;
+```
+
+## 타이포그래피
+- **헤드라인**: 큰 사이즈 (48-64px), 흰색, 굵은 폰트
+- **서브헤드**: 중간 사이즈 (20-24px), 반투명 흰색
+- **본문**: 14-16px, 반투명 흰색
+- **버튼**: 14-16px, 굵은 폰트 (500-600)
+
+## 간격 및 레이아웃
+- 버튼 높이: 40-50px
+- 버튼 패딩: 0px 20-60px (크기에 따라)
+- 둥근 모서리: 4px (작은 요소), 30-32px (버튼, 입력)
+- 카드 간격: 16-24px
+
+## 다크 모드 우선
+- 모든 디자인은 다크 배경 기반
+- 흰색 텍스트와 반투명 요소 사용
+- 강조는 파란색 액센트로
+- 투명도를 활용한 계층 구조
+
+## 인터랙션
+- hover 시 opacity 변화 (0.8 → 1.0)
+- transition: all 0.2s ease
+- 클릭 시 subtle scale 효과
+
+
