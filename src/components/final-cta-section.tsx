@@ -31,9 +31,11 @@ export default function FinalCTASection() {
 
           <div>
             <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
-              MCP Magic으로 귀한 시간을 아껴보세요
+              MCP Magic으로
+              <br />
+              귀한 시간을 아껴보세요
             </h2>
-            <p className="text-sm text-white/80 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
               구독이 필요 없습니다. 지금 디자인 워크플로우 자동화를 시작하세요.
             </p>
           </div>
