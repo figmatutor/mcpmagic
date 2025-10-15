@@ -68,7 +68,7 @@ export default function TestimonialsSection() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4 leading-[1.3]">
             크리에이티브의 목소리
           </h2>
           <p className="text-base text-white/80">
