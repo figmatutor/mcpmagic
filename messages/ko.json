@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "로딩 중..."
+  },
+  "header": {
+    "resources": "리소스",
+    "prompts": "프롬프트",
+    "github": "GitHub",
+    "feedback": "피드백 제출",
+    "resources_items": {
+      "english_playground": {
+        "title": "English Playground",
+        "description": "Try MCP prompts in English Figma playground"
+      },
+      "korean_playground": {
+        "title": "한국어 플레이그라운드",
+        "description": "한국어 Figma 플레이그라운드에서 MCP 프롬프트 체험"
+      },
+      "tutorial_videos": {
+        "title": "Tutorial Videos",
+        "description": "Watch step-by-step tutorials on YouTube"
+      }
+    }
+  },
+  "hero": {
+    "badge": "MCP Magic 하이라이트",
+    "title": "Figma mcp",
+    "subtitle": "연결하다가 포기하셨나요?",
+    "description_line1": "MCP magic으로 클릭 한 번에 연결하고",
+    "description_line2": "워크플로우를 간소화 해보세요.",
+    "cta": "바로 사용해보기",
+    "download_mac": "Mac으로 다운로드",
+    "download_windows": "Windows로 다운로드"
+  },
+  "features": {
+    "title_line1": "디자이너를 위한",
+    "title_line2": "맞춤형 MCP 도구",
+    "description_line1": "MCP Magic는 워크 플로우를 자동화하여",
+    "description_line2": "생산성을 극대화 해줍니다.",
+    "items": {
+      "connect": {
+        "title": "연결",
+        "description": "MCP 프로토콜을 통해 클릭 한 번으로 Figma를 AI에 원활하게 연결하세요"
+      },
+      "automate": {
+        "title": "자동화",
+        "description": "AI 기반 프롬프트와 워크플로우로 반복적인 디자인 작업을 자동화하세요"
+      },
+      "discover": {
+        "title": "검색",
+        "description": "큐레이션된 컬렉션에서 완벽한 프롬프트를 즉시 찾아 적용하세요"
+      },
+      "share": {
+        "title": "공유",
+        "description": "디자인 커뮤니티와 맞춤 프롬프트 및 워크플로우를 공유하세요"
+      }
+    }
+  },
+  "final_cta": {
+    "badge": "지금 시작하세요",
+    "title_line1": "MCP Magic으로",
+    "title_line2": "귀한 시간을 아껴보세요",
+    "description": "지금 디자인 워크플로우 자동화를 시작하세요.",
+    "cta": "무료로 시작하기"
+  },
+  "footer": {
+    "made_with_by": "Made with by",
+    "supported_by": "Supported by",
+    "friends_of_figma": "Friends of Figma",
+    "seoul": "Seoul",
+    "copyright": "© 2025 High Stand. All rights reserved.",
+    "privacy_policy": "Privacy Policy"
+  },
+  "prompts_page": {
+    "title": "프롬프트 라이브러리 둘러보기",
+    "description": "디자인 워크플로우를 자동화하도록 설계된 AI 기반 프롬프트의 큐레이션된 컬렉션을 탐색하세요",
+    "filters": {
+      "all_categories": "모든 카테고리",
+      "all_languages": "모든 언어",
+      "search_placeholder": "프롬프트 검색...",
+      "clear_filters": "필터 초기화"
+    },
+    "categories": {
+      "auto-populate": "자동 채우기",
+      "annotation": "주석",
+      "override": "오버라이드",
+      "connector": "커넥터",
+      "vibe-design": "바이브 디자인"
+    },
+    "languages": {
+      "english": "English",
+      "korean": "한국어"
+    }
+  },
+  "privacy_page": {
+    "title": "개인정보 처리방침",
+    "last_updated": "최종 업데이트",
+    "sections": {
+      "overview": {
+        "title": "개요",
+        "content": "본 애플리케이션(\"MCP Magic\")은 Figma와 AI 어시스턴트를 MCP(모델 컨텍스트 프로토콜)를 통해 연결하는 개발자 도구입니다. 우리는 귀하의 개인정보를 수집, 저장 또는 처리하지 않습니다."
+      },
+      "no_data_collection": {
+        "title": "데이터 수집 안 함",
+        "content": "MCP Magic는 다음을 수행하지 않습니다",
+        "items": [
+          "개인 식별 정보 수집",
+          "사용자 데이터 저장",
+          "분석 또는 추적 서비스 사용",
+          "쿠키 또는 로컬 스토리지 활용 (테마 설정 제외)",
+          "제3자와 정보 공유"
+        ]
+      },
+      "how_it_works": {
+        "title": "작동 방식",
+        "content": "이 도구는 다음과 같이 작동합니다",
+        "items": [
+          "로컬 Figma 데스크톱 앱에 연결",
+          "AI 어시스턴트 (Claude, ChatGPT 등)와의 브릿지 역할 수행",
+          "모든 처리는 귀하의 로컬 환경에서 발생",
+          "Figma 데이터는 귀하의 기기를 떠나지 않음 (MCP 프로토콜의 일부로 선택한 AI 서비스 제외)"
+        ]
+      },
+      "third_party_services": {
+        "title": "제3자 서비스",
+        "content": "귀하가 MCP Magic를 사용할 때",
+        "items": [
+          "Figma의 개인정보 보호정책이 Figma 데이터에 적용됩니다",
+          "선택한 AI 서비스의 개인정보 보호정책이 AI 상호작용에 적용됩니다",
+          "우리는 이러한 제3자 서비스와 별개이며 그들의 데이터 관행에 대해 책임지지 않습니다"
+        ]
+      },
+      "changes": {
+        "title": "본 정책의 변경",
+        "content": "본 개인정보 보호정책을 업데이트할 경우, 본 페이지에 새 버전을 게시하고 \"최종 업데이트\" 날짜를 수정합니다."
+      },
+      "contact": {
+        "title": "문의",
+        "content": "질문이나 우려 사항이 있으시면 GitHub 저장소에서 이슈를 개설해 주세요"
+      }
+    }
+  },
+  "metadata": {
+    "home": {
+      "title": "Figma MCP Magic - AI 기반 디자인 자동화 프롬프트",
+      "description": "Figma MCP(모델 컨텍스트 프로토콜)를 위한 강력한 프롬프트의 큐레이션된 컬렉션. AI 기반 자동화로 디자인 워크플로우를 혁신하고, 주석을 간소화하고, 핸드오프를 자동화하고, 종합적인 프롬프트 라이브러리로 문서화를 향상시키세요."
+    },
+    "prompts": {
+      "title": "프롬프트 라이브러리 - Figma MCP Magic",
+      "description": "디자인 워크플로우를 자동화하도록 설계된 AI 기반 프롬프트의 큐레이션된 컬렉션을 탐색하세요"
+    },
+    "privacy": {
+      "title": "개인정보 처리방침 - Figma MCP Magic",
+      "description": "MCP Magic의 개인정보 보호 정책 및 데이터 처리 관행"
+    }
+  }
+}
+

@@ -5,17 +5,17 @@ import FeaturesSection from "@/components/features-section";
 import FinalCTASection from "@/components/final-cta-section";
 import Contributors from "@/components/contributors";
 import Footer from "@/components/footer";
-import { BeamsBackground } from "@/components/ui/beams-background";
+import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
 
 export default function LandingPage() {
   return (
-    <BeamsBackground intensity="medium">
+    <AuroraBackground className="min-h-screen" showRadialGradient={false}>
       <HeroSection />
       <FeaturesSection />
       <FinalCTASection />
       <Contributors />
       <Footer />
-    </BeamsBackground>
+    </AuroraBackground>
   );
 }
 

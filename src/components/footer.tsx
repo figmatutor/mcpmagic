@@ -1,32 +1,36 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ExternalLink } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('footer');
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer className="bg-white dark:bg-black border-t border-slate-200 dark:border-white/10">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col items-center space-y-6">
           {/* Made by section */}
           <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-2 text-sm text-white/60">
-              <span>Made with by</span>
+            <div className="flex items-center justify-center gap-2 text-sm text-slate-600 dark:text-white/60">
+              <span>{t('made_with_by')}</span>
 
               <a
                 href="https://www.linkedin.com/in/dusskapark/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-white hover:text-[rgb(58,94,251)] transition-colors"
+                className="flex items-center gap-1 text-slate-950 dark:text-white hover:text-[rgb(58,94,251)] transition-colors"
               >
                 <span className="font-medium">Jude</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
-              <span className="text-white/60">&amp;</span>
+              <span className="text-slate-600 dark:text-white/60">&amp;</span>
               <a
                 href="https://www.instagram.com/figma_tutor/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-white hover:text-[rgb(58,94,251)] transition-colors"
+                className="flex items-center gap-1 text-slate-950 dark:text-white hover:text-[rgb(58,94,251)] transition-colors"
               >
                 <span className="font-medium">Figma tutor</span>
                 <ExternalLink className="h-3 w-3" />
@@ -35,11 +39,11 @@ export default function Footer() {
           </div>
 
           {/* Divider */}
-          <div className="w-24 h-px bg-white/10"></div>
+          <div className="w-24 h-px bg-slate-200 dark:bg-white/10"></div>
 
           {/* Supported by section */}
           <div className="text-center space-y-4">
-            <p className="text-sm text-white/60">Supported by</p>
+            <p className="text-sm text-slate-600 dark:text-white/60">{t('supported_by')}</p>
             <div className="flex items-center justify-center gap-8">
               {/* Friends of Figma Seoul */}
               <a
@@ -57,24 +61,24 @@ export default function Footer() {
                   />
                 </div>
                 <div className="text-center">
-                  <div className="text-xs font-medium text-white group-hover:text-[rgb(58,94,251)] transition-colors">
-                    Friends of Figma
+                  <div className="text-xs font-medium text-slate-950 dark:text-white group-hover:text-[rgb(58,94,251)] transition-colors">
+                    {t('friends_of_figma')}
                   </div>
-                  <div className="text-xs text-white/60">Seoul</div>
+                  <div className="text-xs text-slate-600 dark:text-white/60">{t('seoul')}</div>
                 </div>
               </a>
             </div>
           </div>
 
           {/* Bottom text */}
-          <div className="text-xs text-white/60 text-center">
+          <div className="text-xs text-slate-600 dark:text-white/60 text-center">
             <p>
-              © 2025 High Stand. All rights reserved. ·{" "}
+              {t('copyright')} ·{" "}
               <Link
                 href="/privacy"
-                className="text-white/60 hover:text-[rgb(58,94,251)] transition-colors underline-offset-2 hover:underline"
+                className="text-slate-600 dark:text-white/60 hover:text-[rgb(58,94,251)] transition-colors underline-offset-2 hover:underline"
               >
-                Privacy Policy
+                {t('privacy_policy')}
               </Link>
             </p>
           </div>

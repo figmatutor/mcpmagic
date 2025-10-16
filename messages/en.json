@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Loading..."
+  },
+  "header": {
+    "resources": "Resources",
+    "prompts": "Prompts",
+    "github": "GitHub",
+    "feedback": "Submit Feedback",
+    "resources_items": {
+      "english_playground": {
+        "title": "English Playground",
+        "description": "Try MCP prompts in English Figma playground"
+      },
+      "korean_playground": {
+        "title": "Korean Playground",
+        "description": "Try MCP prompts in Korean Figma playground"
+      },
+      "tutorial_videos": {
+        "title": "Tutorial Videos",
+        "description": "Watch step-by-step tutorials on YouTube"
+      }
+    }
+  },
+  "hero": {
+    "badge": "MCP Magic Highlights",
+    "title": "Figma MCP",
+    "subtitle": "Gave up trying to connect?",
+    "description_line1": "Connect with one click using MCP magic",
+    "description_line2": "and streamline your workflow.",
+    "cta": "Get Started Now",
+    "download_mac": "Download for Mac",
+    "download_windows": "Download for Windows"
+  },
+  "features": {
+    "title_line1": "Custom MCP Tools",
+    "title_line2": "for Designers",
+    "description_line1": "MCP Magic automates workflows",
+    "description_line2": "to maximize productivity.",
+    "items": {
+      "connect": {
+        "title": "Connect",
+        "description": "Seamlessly connect Figma to AI with one click through MCP protocol"
+      },
+      "automate": {
+        "title": "Automate",
+        "description": "Automate repetitive design tasks with AI-powered prompts and workflows"
+      },
+      "discover": {
+        "title": "Discover",
+        "description": "Instantly find and apply the perfect prompts from our curated collection"
+      },
+      "share": {
+        "title": "Share",
+        "description": "Share custom prompts and workflows with the design community"
+      }
+    }
+  },
+  "final_cta": {
+    "badge": "Get Started Now",
+    "title_line1": "Save Your Precious Time",
+    "title_line2": "with MCP Magic",
+    "description": "Start automating your design workflow today.",
+    "cta": "Start for Free"
+  },
+  "footer": {
+    "made_with_by": "Made with by",
+    "supported_by": "Supported by",
+    "friends_of_figma": "Friends of Figma",
+    "seoul": "Seoul",
+    "copyright": "© 2025 High Stand. All rights reserved.",
+    "privacy_policy": "Privacy Policy"
+  },
+  "prompts_page": {
+    "title": "Browse Prompt Library",
+    "description": "Explore our curated collection of AI-powered prompts designed to automate your design workflow",
+    "filters": {
+      "all_categories": "All Categories",
+      "all_languages": "All Languages",
+      "search_placeholder": "Search prompts...",
+      "clear_filters": "Clear Filters"
+    },
+    "categories": {
+      "auto-populate": "Auto Populate",
+      "annotation": "Annotation",
+      "override": "Override",
+      "connector": "Connector",
+      "vibe-design": "Vibe Design"
+    },
+    "languages": {
+      "english": "English",
+      "korean": "한국어"
+    }
+  },
+  "privacy_page": {
+    "title": "Privacy Policy",
+    "last_updated": "Last Updated",
+    "sections": {
+      "overview": {
+        "title": "Overview",
+        "content": "This application (\"MCP Magic\") is a developer tool that integrates Figma with AI assistants through the Model Context Protocol (MCP). We do not collect, store, or process any of your personal information."
+      },
+      "no_data_collection": {
+        "title": "No Data Collection",
+        "content": "MCP Magic does not",
+        "items": [
+          "Collect personal identifying information",
+          "Store user data",
+          "Use analytics or tracking services",
+          "Utilize cookies or local storage (except for theme preferences)",
+          "Share information with third parties"
+        ]
+      },
+      "how_it_works": {
+        "title": "How It Works",
+        "content": "This tool works by",
+        "items": [
+          "Connecting to your local Figma desktop application",
+          "Acting as a bridge between Figma and AI assistants (like Claude, ChatGPT, etc.)",
+          "All processing happens in your local environment",
+          "Your Figma data never leaves your device (except to the AI service of your choice as part of the MCP protocol)"
+        ]
+      },
+      "third_party_services": {
+        "title": "Third-Party Services",
+        "content": "When you use MCP Magic",
+        "items": [
+          "Figma's privacy policy applies to your Figma data",
+          "Your chosen AI service's privacy policy applies to AI interactions",
+          "We are separate from these third-party services and not responsible for their data practices"
+        ]
+      },
+      "changes": {
+        "title": "Changes to This Policy",
+        "content": "If we update this privacy policy, we will post the new version on this page and update the \"Last Updated\" date."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "If you have questions or concerns, please open an issue on our GitHub repository"
+      }
+    }
+  },
+  "metadata": {
+    "home": {
+      "title": "Figma MCP Magic - AI-Powered Design Automation Prompts",
+      "description": "A curated collection of powerful prompts for Figma MCP (Model Context Protocol). Transform your design workflow with AI-powered automation, streamline annotations, automate handoff, and enhance documentation with our comprehensive prompt library."
+    },
+    "prompts": {
+      "title": "Prompt Library - Figma MCP Magic",
+      "description": "Explore our curated collection of AI-powered prompts designed to automate your design workflow"
+    },
+    "privacy": {
+      "title": "Privacy Policy - Figma MCP Magic",
+      "description": "Privacy policy and data practices for MCP Magic"
+    }
+  }
+}
+

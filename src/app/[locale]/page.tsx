@@ -1,7 +1,15 @@
 import LandingPage from "./landing-page";
 import { Suspense } from "react";
+import { setRequestLocale } from 'next-intl/server';
 
-export default async function HomePage() {
+export default async function HomePage({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -64,9 +72,10 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <Suspense fallback={<div>로딩 중...</div>}>
+      <Suspense fallback={<div>{locale === 'ko' ? '로딩 중...' : 'Loading...'}</div>}>
         <LandingPage />
       </Suspense>
     </>
   );
 }
+
