@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ExternalLink } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('footer');
   return (
     <footer className="bg-black border-t border-white/10">
       <div className="container mx-auto px-4 py-8">
@@ -10,7 +14,7 @@ export default function Footer() {
           {/* Made by section */}
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-2 text-sm text-white/60">
-              <span>Made with by</span>
+              <span>{t('made_with_by')}</span>
 
               <a
                 href="https://www.linkedin.com/in/dusskapark/"
@@ -39,7 +43,7 @@ export default function Footer() {
 
           {/* Supported by section */}
           <div className="text-center space-y-4">
-            <p className="text-sm text-white/60">Supported by</p>
+            <p className="text-sm text-white/60">{t('supported_by')}</p>
             <div className="flex items-center justify-center gap-8">
               {/* Friends of Figma Seoul */}
               <a
@@ -58,9 +62,9 @@ export default function Footer() {
                 </div>
                 <div className="text-center">
                   <div className="text-xs font-medium text-white group-hover:text-[rgb(58,94,251)] transition-colors">
-                    Friends of Figma
+                    {t('friends_of_figma')}
                   </div>
-                  <div className="text-xs text-white/60">Seoul</div>
+                  <div className="text-xs text-white/60">{t('seoul')}</div>
                 </div>
               </a>
             </div>
@@ -69,12 +73,12 @@ export default function Footer() {
           {/* Bottom text */}
           <div className="text-xs text-white/60 text-center">
             <p>
-              © 2025 High Stand. All rights reserved. ·{" "}
+              {t('copyright')} ·{" "}
               <Link
                 href="/privacy"
                 className="text-white/60 hover:text-[rgb(58,94,251)] transition-colors underline-offset-2 hover:underline"
               >
-                Privacy Policy
+                {t('privacy_policy')}
               </Link>
             </p>
           </div>

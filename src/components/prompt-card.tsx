@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { Link } from "@/i18n/routing";
 import {
   Card,
   CardContent,
@@ -29,6 +31,7 @@ interface Prompt {
 
 interface PromptCardProps {
   prompt: Prompt;
+  locale?: string;
 }
 
 const categories = [
@@ -39,7 +42,7 @@ const categories = [
   { id: "design-system", title: "Design System", icon: Palette },
 ];
 
-export default function PromptCard({ prompt }: PromptCardProps) {
+export default function PromptCard({ prompt, locale }: PromptCardProps) {
   const category = categories.find((c) => c.id === prompt.category);
 
   const handleCopyPrompt = async (e: React.MouseEvent) => {
