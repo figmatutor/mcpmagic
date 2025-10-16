@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
 export default function Footer() {
@@ -20,7 +21,7 @@ export default function Footer() {
                 <span className="font-medium">Jude</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
-              <span className="text-white/60">&</span>
+              <span className="text-white/60">&amp;</span>
               <a
                 href="https://www.instagram.com/figma_tutor/"
                 target="_blank"
@@ -68,8 +69,13 @@ export default function Footer() {
           {/* Bottom text */}
           <div className="text-xs text-white/60 text-center">
             <p>
-              © 2025 Figma MCP Magic. Open source project for the design
-              community.
+              © 2025 High Stand. All rights reserved. ·{" "}
+              <Link
+                href="/privacy"
+                className="text-white/60 hover:text-[rgb(58,94,251)] transition-colors underline-offset-2 hover:underline"
+              >
+                Privacy Policy
+              </Link>
             </p>
           </div>
         </div>

@@ -36,7 +36,7 @@ export default function Contributors() {
     const fetchContributors = async () => {
       try {
         const response = await fetch(
-          "https://api.github.com/repos/dusskapark/figma-mcp-prompts/contributors",
+          "https://api.github.com/repos/figmatutor/mcpmagic/contributors",
           {
             headers: {
               Accept: "application/vnd.github.v3+json",
@@ -236,7 +236,7 @@ export default function Contributors() {
 
         <div className="text-center mt-8">
           <a
-            href="https://github.com/dusskapark/figma-mcp-prompts/graphs/contributors"
+            href="https://github.com/figmatutor/mcpmagic/graphs/contributors"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-[rgb(58,94,251)] transition-colors"
