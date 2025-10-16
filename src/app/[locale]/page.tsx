@@ -1,6 +1,5 @@
 import LandingPage from "./landing-page";
 import { Suspense } from "react";
-import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 
 export default async function HomePage({

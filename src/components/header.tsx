@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { Github, ExternalLink, Plus } from "lucide-react";
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
@@ -42,7 +41,7 @@ export default function Header() {
   ];
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 dark:bg-black">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-white/10 bg-white/95 dark:bg-black/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/90 supports-[backdrop-filter]:dark:bg-black/90">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">

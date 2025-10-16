@@ -2,7 +2,6 @@ import { createReader } from "@keystatic/core/reader";
 import keystaticConfig from "../../../../keystatic.config";
 import PromptClient from "./prompt-client";
 import { Suspense } from "react";
-import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 
 const reader = createReader(process.cwd(), keystaticConfig);
