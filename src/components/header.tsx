@@ -102,7 +102,9 @@ export default function Header() {
               GitHub
             </a>
           </Button>
-          <ThemeToggle />
+          <div className="hidden">
+            <ThemeToggle />
+          </div>
                <Button
                  size="sm"
                  onClick={() =>
