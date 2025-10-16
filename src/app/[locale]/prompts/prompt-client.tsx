@@ -560,7 +560,6 @@ export default function PromptClient({ prompts, locale }: PromptClientProps) {
                 <PromptCard
                   key={prompt.slug}
                   prompt={prompt}
-                  locale={locale}
                 />
               ))}
             </div>
