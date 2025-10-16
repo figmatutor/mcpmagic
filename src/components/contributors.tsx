@@ -102,8 +102,8 @@ export default function Contributors() {
   if (loading) {
     return (
       <section className="py-12 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
+        <div className="container mx-auto px-4 text-center">
+          <div>
             <div className="animate-spin h-8 w-8 border-2 border-[rgb(58,94,251)] border-t-transparent rounded-full mx-auto"></div>
             <p className="mt-2 text-white/60">
               Loading contributors...
@@ -120,8 +120,8 @@ export default function Contributors() {
 
   return (
     <section className="py-12 bg-black">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
+      <div className="container mx-auto px-4 text-center">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight flex items-center justify-center gap-2 text-white">
             <Users className="h-6 w-6" />
             Contributors
@@ -234,7 +234,7 @@ export default function Contributors() {
           </div>
         )}
 
-        <div className="text-center mt-8">
+        <div className="mt-8">
           <a
             href="https://github.com/figmatutor/mcpmagic/graphs/contributors"
             target="_blank"
