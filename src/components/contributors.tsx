@@ -101,11 +101,11 @@ export default function Contributors() {
 
   if (loading) {
     return (
-      <section className="py-12 bg-black">
+      <section className="py-12 bg-white dark:bg-black">
         <div className="container mx-auto px-4 text-center">
           <div>
             <div className="animate-spin h-8 w-8 border-2 border-[rgb(58,94,251)] border-t-transparent rounded-full mx-auto"></div>
-            <p className="mt-2 text-white/60">
+            <p className="mt-2 text-slate-600 dark:text-white/60">
               Loading contributors...
             </p>
           </div>
@@ -119,14 +119,14 @@ export default function Contributors() {
   }
 
   return (
-    <section className="py-12 bg-black">
+    <section className="py-12 bg-white dark:bg-black">
       <div className="container mx-auto px-4 text-center">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold tracking-tight flex items-center justify-center gap-2 text-white">
+          <h2 className="text-2xl font-bold tracking-tight flex items-center justify-center gap-2 text-slate-950 dark:text-white">
             <Users className="h-6 w-6" />
             Contributors
           </h2>
-          <p className="text-white/60 mt-2">
+          <p className="text-slate-600 dark:text-white/60 mt-2">
             Thank you to all the amazing people who have contributed to this
             project
           </p>
@@ -136,7 +136,7 @@ export default function Contributors() {
           {paginatedContributors.map((contributor) => (
             <Card
               key={contributor.id}
-              className="group bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer"
+              className="group bg-slate-50 dark:bg-white/5 backdrop-blur-sm border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-all duration-200 cursor-pointer"
               onClick={() => window.open(contributor.html_url, "_blank")}
             >
               <CardContent className="p-4">
@@ -156,10 +156,10 @@ export default function Contributors() {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-medium text-sm truncate text-white">
+                      <h3 className="font-medium text-sm truncate text-slate-950 dark:text-white">
                         {contributor.name || contributor.login}
                       </h3>
-                      <ExternalLink className="h-3 w-3 text-white/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ExternalLink className="h-3 w-3 text-slate-600 dark:text-white/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* <Badge variant="secondary" className="text-xs">
@@ -167,7 +167,7 @@ export default function Contributors() {
                       </Badge> */}
                       {contributor.name &&
                         contributor.name !== contributor.login && (
-                          <Badge variant="outline" className="text-xs bg-transparent border-white/20 text-white/70">
+                          <Badge variant="outline" className="text-xs bg-transparent border-slate-300 dark:border-white/20 text-slate-600 dark:text-white/70">
                             @{contributor.login}
                           </Badge>
                         )}
@@ -239,7 +239,7 @@ export default function Contributors() {
             href="https://github.com/figmatutor/mcpmagic/graphs/contributors"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-[rgb(58,94,251)] transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-white/60 hover:text-[rgb(58,94,251)] transition-colors"
           >
             View all contributors on GitHub
             <ExternalLink className="h-4 w-4" />

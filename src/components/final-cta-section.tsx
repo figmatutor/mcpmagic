@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
 
 export default function FinalCTASection() {
+  const t = useTranslations('final_cta');
   const handleGetStarted = () => {
     window.open(
       "https://www.figma.com/community/file/1513760524697897204",
@@ -24,19 +26,19 @@ export default function FinalCTASection() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <Badge variant="secondary" className="bg-transparent text-white/80 border-0">
+          <Badge variant="secondary" className="bg-transparent text-slate-700 dark:text-white/80 border-0">
             <Sparkles className="h-4 w-4 mr-2" />
-            지금 시작하세요
+            {t('badge')}
           </Badge>
 
           <div>
-            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4 leading-[1.3]">
-              MCP Magic으로
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-950 dark:text-white mb-4 leading-[1.3]">
+              {t('title_line1')}
               <br />
-              귀한 시간을 아껴보세요
+              {t('title_line2')}
             </h2>
-            <p className="text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
-              지금 디자인 워크플로우 자동화를 시작하세요.
+            <p className="text-base text-slate-700 dark:text-white/80 max-w-2xl mx-auto leading-relaxed">
+              {t('description')}
             </p>
           </div>
 
@@ -52,7 +54,7 @@ export default function FinalCTASection() {
               className="bg-[rgb(58,94,251)] hover:bg-[rgb(48,84,241)] text-white text-base font-semibold rounded-[32px] px-14 h-[50px] transition-all duration-200"
               onClick={handleGetStarted}
             >
-              무료로 시작하기
+              {t('cta')}
             </Button>
           </motion.div>
         </motion.div>
