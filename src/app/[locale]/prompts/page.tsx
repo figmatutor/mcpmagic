@@ -74,7 +74,7 @@ export default async function PromptsPage({
       <section className="py-20">
         <div className="container mx-auto px-4">
           <Suspense fallback={<div>{locale === 'ko' ? '로딩 중...' : 'Loading...'}</div>}>
-            <PromptClient prompts={prompts} locale={locale} />
+            <PromptClient prompts={prompts} />
           </Suspense>
         </div>
       </section>
