@@ -94,7 +94,7 @@ export default function Header() {
             className="hidden sm:inline-flex"
           >
             <a
-              href="https://github.com/dusskapark/figma-mcp-prompts"
+              href="https://github.com/figmatutor/mcpmagic"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -107,7 +107,7 @@ export default function Header() {
                  size="sm"
                  onClick={() =>
                    window.open(
-                     "https://github.com/dusskapark/figma-mcp-prompts/blob/main/CONTRIBUTING.md",
+                     "https://github.com/figmatutor/mcpmagic/issues/new",
                      "_blank",
                      "noopener,noreferrer",
                    )

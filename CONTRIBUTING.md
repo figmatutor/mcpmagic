@@ -7,7 +7,7 @@ We welcome contributions from the community! This document explains how to add y
 ### Option 1: Submit via GitHub Issue (Recommended)
 The easiest way to contribute your prompt:
 
-1. **[Create a New Issue](https://github.com/dusskapark/figma-mcp-prompts/issues/new)**
+1. **[Create a New Issue](https://github.com/figmatutor/mcpmagic/issues/new)**
 2. Choose "Prompt Submission" template
 3. Fill out the template with your prompt details
 4. Submit and we'll review it for inclusion
@@ -101,9 +101,9 @@ We support multiple languages:
 
 ## 🆘 Need Help?
 
-- **Questions?** [Open a Discussion](https://github.com/dusskapark/figma-mcp-prompts/discussions)
-- **Bug Reports?** [Create an Issue](https://github.com/dusskapark/figma-mcp-prompts/issues)
-- **Feature Ideas?** [Start a Discussion](https://github.com/dusskapark/figma-mcp-prompts/discussions)
+- **Questions?** [Open a Discussion](https://github.com/figmatutor/mcpmagic/discussions)
+- **Bug Reports?** [Create an Issue](https://github.com/figmatutor/mcpmagic/issues)
+- **Feature Ideas?** [Start a Discussion](https://github.com/figmatutor/mcpmagic/discussions)
 
 ---
 
@@ -116,7 +116,7 @@ We support multiple languages:
 ### 방법 1: GitHub 이슈로 제출 (추천)
 가장 쉬운 기여 방법:
 
-1. **[새 이슈 생성](https://github.com/dusskapark/figma-mcp-prompts/issues/new)**
+1. **[새 이슈 생성](https://github.com/figmatutor/mcpmagic/issues/new)**
 2. "Prompt Submission" 템플릿 선택
 3. 프롬프트 세부사항으로 템플릿 작성
 4. 제출하면 검토 후 포함 여부 결정
@@ -210,9 +210,9 @@ language: English | 한국어 | 中文
 
 ## 🆘 도움이 필요한가요?
 
-- **질문?** [토론 시작하기](https://github.com/dusskapark/figma-mcp-prompts/discussions)
-- **버그 리포트?** [이슈 생성하기](https://github.com/dusskapark/figma-mcp-prompts/issues)
-- **기능 아이디어?** [토론 시작하기](https://github.com/dusskapark/figma-mcp-prompts/discussions)
+- **질문?** [토론 시작하기](https://github.com/figmatutor/mcpmagic/discussions)
+- **버그 리포트?** [이슈 생성하기](https://github.com/figmatutor/mcpmagic/issues)
+- **기능 아이디어?** [토론 시작하기](https://github.com/figmatutor/mcpmagic/discussions)
 
 ---
 

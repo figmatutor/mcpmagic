@@ -554,7 +554,7 @@ export default async function PromptDetailPage({
                 data-oid="t_p7qd-"
               >
                 <a
-                  href={`https://github.com/dusskapark/figma-mcp-prompts/edit/main/content/prompts/${slug}.mdx`}
+                  href={`https://github.com/figmatutor/mcpmagic/edit/main/content/prompts/${slug}.mdx`}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-oid="m1qmnoy"

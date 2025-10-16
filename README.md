@@ -12,8 +12,8 @@ A curated collection of prompts for Figma MCP (Model Context Protocol) automatio
 ## Getting Started
 
 ```bash
-git clone https://github.com/dusskapark/figma-mcp-prompts.git
-cd figma-mcp-prompts
+git clone https://github.com/figmatutor/mcpmagic.git
+cd mcpmagic
 npm install
 npm run dev
 ```
