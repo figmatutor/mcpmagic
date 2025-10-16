@@ -55,7 +55,6 @@ interface Prompt {
 
 interface PromptClientProps {
   prompts: Prompt[];
-  locale: string;
 }
 
 const categories = [
@@ -68,7 +67,7 @@ const categories = [
 
 const languages = ["English", "한국어", "中文"];
 
-export default function PromptClient({ prompts, locale }: PromptClientProps) {
+export default function PromptClient({ prompts }: PromptClientProps) {
   const t = useTranslations('prompts_page');
   const searchParams = useSearchParams();
   const router = useRouter();
