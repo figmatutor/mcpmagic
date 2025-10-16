@@ -42,12 +42,12 @@ export default function FeaturesSection() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4 leading-[1.3]">
+          <h2 className="text-3xl lg:text-5xl font-bold text-slate-950 dark:text-white mb-4 leading-[1.3]">
             {t('title_line1')}
             <br />
             {t('title_line2')}
           </h2>
-          <p className="text-base text-white/80 max-w-3xl mx-auto leading-[1.5]">
+          <p className="text-base text-slate-700 dark:text-white/80 max-w-3xl mx-auto leading-[1.5]">
             {t('description_line1')}
             <br />
             {t('description_line2')}

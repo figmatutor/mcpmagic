@@ -28,7 +28,7 @@ export default function HeroSection() {
           <div className="inline-block">
             <Badge 
               variant="secondary" 
-              className="bg-transparent text-white/80 border-0 text-sm font-medium px-6 py-2"
+              className="bg-transparent text-slate-700 dark:text-white/80 border-0 text-sm font-medium px-6 py-2"
             >
               {t('badge')}
             </Badge>
@@ -36,13 +36,13 @@ export default function HeroSection() {
 
           {/* Main Headline - Muzli Style */}
           <div className="space-y-4">
-            <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-white leading-[1.4]">
+            <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-slate-950 dark:text-white leading-[1.4]">
               {t('title')}
               <br />
-              <span className="text-white/60">{t('subtitle')}</span>
+              <span className="text-slate-600 dark:text-white/60">{t('subtitle')}</span>
             </h1>
 
-            <p className="text-base text-white/80 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base text-slate-700 dark:text-white/80 max-w-3xl mx-auto leading-relaxed">
               {t('description_line1')}
               <br />
               {t('description_line2')}

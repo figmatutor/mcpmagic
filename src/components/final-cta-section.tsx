@@ -26,18 +26,18 @@ export default function FinalCTASection() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <Badge variant="secondary" className="bg-transparent text-white/80 border-0">
+          <Badge variant="secondary" className="bg-transparent text-slate-700 dark:text-white/80 border-0">
             <Sparkles className="h-4 w-4 mr-2" />
             {t('badge')}
           </Badge>
 
           <div>
-            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4 leading-[1.3]">
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-950 dark:text-white mb-4 leading-[1.3]">
               {t('title_line1')}
               <br />
               {t('title_line2')}
             </h2>
-            <p className="text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base text-slate-700 dark:text-white/80 max-w-2xl mx-auto leading-relaxed">
               {t('description')}
             </p>
           </div>
