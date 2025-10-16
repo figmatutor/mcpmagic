@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { useTranslations } from 'next-intl';
 
 interface Feature {
   title: string;
@@ -10,22 +11,24 @@ interface Feature {
 }
 
 export default function FeaturesSection() {
+  const t = useTranslations('features');
+  
   const mainFeatures: Feature[] = [
     {
-      title: "연결",
-      description: "MCP 프로토콜을 통해 클릭 한 번으로 Figma를 AI에 원활하게 연결하세요",
+      title: t('items.connect.title'),
+      description: t('items.connect.description'),
     },
     {
-      title: "자동화",
-      description: "AI 기반 프롬프트와 워크플로우로 반복적인 디자인 작업을 자동화하세요",
+      title: t('items.automate.title'),
+      description: t('items.automate.description'),
     },
     {
-      title: "검색",
-      description: "큐레이션된 컬렉션에서 완벽한 프롬프트를 즉시 찾아 적용하세요",
+      title: t('items.discover.title'),
+      description: t('items.discover.description'),
     },
     {
-      title: "공유",
-      description: "디자인 커뮤니티와 맞춤 프롬프트 및 워크플로우를 공유하세요",
+      title: t('items.share.title'),
+      description: t('items.share.description'),
     },
   ];
 
@@ -40,14 +43,14 @@ export default function FeaturesSection() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4 leading-[1.3]">
-            디자이너를 위한
+            {t('title_line1')}
             <br />
-            맞춤형 MCP 도구
+            {t('title_line2')}
           </h2>
           <p className="text-base text-white/80 max-w-3xl mx-auto leading-[1.5]">
-            MCP Magic는 워크 플로우를 자동화하여
+            {t('description_line1')}
             <br />
-            생산성을 극대화 해줍니다.
+            {t('description_line2')}
           </p>
         </motion.div>
 

@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { Github, ExternalLink, Plus } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
+import { MCPLogo } from "@/components/mcp-logo";
 
 import {
   NavigationMenu,
@@ -16,38 +18,36 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-
-const resources = [
-  {
-    title: "English Playground",
-    href: "https://www.figma.com/community/file/1513760524697897204",
-    description: "Try MCP prompts in English Figma playground",
-  },
-  {
-    title: "한국어 플레이그라운드",
-    href: "https://www.figma.com/community/file/1513759391089024242",
-    description: "한국어 Figma 플레이그라운드에서 MCP 프롬프트 체험",
-  },
-  {
-    title: "Tutorial Videos",
-    href: "https://youtube.com/playlist?list=PLLQlZaiiGlHOdfqGoErLQaMaDPZdHARVV&si=uCGpp7BwXerIhtbV",
-    description: "Watch step-by-step tutorials on YouTube",
-  },
-];
+import LanguageToggle from "@/components/language-toggle";
 
 export default function Header() {
+  const t = useTranslations('header');
+  
+  const resources = [
+    {
+      title: t('resources_items.english_playground.title'),
+      href: "https://www.figma.com/community/file/1513760524697897204",
+      description: t('resources_items.english_playground.description'),
+    },
+    {
+      title: t('resources_items.korean_playground.title'),
+      href: "https://www.figma.com/community/file/1513759391089024242",
+      description: t('resources_items.korean_playground.description'),
+    },
+    {
+      title: t('resources_items.tutorial_videos.title'),
+      href: "https://youtube.com/playlist?list=PLLQlZaiiGlHOdfqGoErLQaMaDPZdHARVV&si=uCGpp7BwXerIhtbV",
+      description: t('resources_items.tutorial_videos.description'),
+    },
+  ];
+  
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 dark:bg-black">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <Image 
-            src="/assets/logo.svg" 
-            alt="Figma MCP Magic" 
-            width={140}
-            height={28}
-            className="h-7 w-auto"
-            priority
+          <MCPLogo 
+            className="h-7 w-auto text-black dark:text-white"
           />
         </Link>
 
@@ -56,7 +56,7 @@ export default function Header() {
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger className="text-sm">
-                리소스
+                {t('resources')}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[600px]">
@@ -78,7 +78,7 @@ export default function Header() {
                 className={navigationMenuTriggerStyle()}
               >
                 <Link href="/prompts" className="text-sm">
-                  프롬프트
+                  {t('prompts')}
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -99,9 +99,10 @@ export default function Header() {
               rel="noopener noreferrer"
             >
               <Github className="h-4 w-4 mr-2" />
-              GitHub
+              {t('github')}
             </a>
           </Button>
+          <LanguageToggle />
           <ThemeToggle />
                <Button
                  size="sm"
@@ -115,7 +116,7 @@ export default function Header() {
                  className="bg-[rgb(58,94,251)] hover:bg-[rgb(48,84,241)] text-white rounded-[32px] px-5 h-9 text-sm font-semibold transition-all duration-200"
                >
                  <Plus className="h-4 w-4" />
-                 피드백 제출
+                 {t('feedback')}
                </Button>
         </div>
       </div>
