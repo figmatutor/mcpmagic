@@ -132,13 +132,14 @@ export default function Contributors() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          {paginatedContributors.map((contributor) => (
-            <Card
-              key={contributor.id}
-              className="group bg-slate-50 dark:bg-white/5 backdrop-blur-sm border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-all duration-200 cursor-pointer"
-              onClick={() => window.open(contributor.html_url, "_blank")}
-            >
+        <div className="flex justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl">
+            {paginatedContributors.map((contributor) => (
+              <Card
+                key={contributor.id}
+                className="group bg-slate-50 dark:bg-white/5 backdrop-blur-sm border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-all duration-200 cursor-pointer"
+                onClick={() => window.open(contributor.html_url, "_blank")}
+              >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-12 w-12">
@@ -177,6 +178,7 @@ export default function Contributors() {
               </CardContent>
             </Card>
           ))}
+          </div>
         </div>
 
         {/* Pagination */}
