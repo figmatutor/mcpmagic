@@ -63,7 +63,7 @@ export default function HeroSection() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 <DropdownMenuItem
-                  onClick={() => window.open("https://www.figma.com/community/file/1513759391089024242", "_blank", "noopener,noreferrer")}
+                  onClick={() => window.open("https://apps.apple.com/kr/app/figma-mcp-magic/id6751596669?mt=12", "_blank", "noopener,noreferrer")}
                   className="cursor-pointer"
                 >
                   <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">

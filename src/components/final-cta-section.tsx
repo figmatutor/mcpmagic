@@ -10,7 +10,7 @@ export default function FinalCTASection() {
   const t = useTranslations('final_cta');
   const handleGetStarted = () => {
     window.open(
-      "https://www.figma.com/community/file/1513760524697897204",
+      "https://apps.apple.com/kr/app/figma-mcp-magic/id6751596669?mt=12",
       "_blank",
       "noopener,noreferrer"
     );
