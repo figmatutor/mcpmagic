@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 export default function HeroSection() {
   const t = useTranslations('hero');
@@ -72,8 +73,12 @@ export default function HeroSection() {
                   {t('download_mac')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => window.open("https://apps.apple.com/kr/app/figma-mcp-magic/id6751596669?mt=12", "_blank", "noopener,noreferrer")}
-                  className="cursor-pointer"
+                  disabled
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toast.info("준비중입니다.");
+                  }}
+                  className="cursor-not-allowed opacity-50"
                 >
                   <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v18l-5 2.09V5.07L20 3M3 13l6 .09v6.81l-6-1.15V13z"/>
