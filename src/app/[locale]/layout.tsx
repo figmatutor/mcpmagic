@@ -19,13 +19,13 @@ export async function generateMetadata({
   const { locale } = await params;
   
   const titles = {
-    en: "Figma MCP Magic - AI-Powered Design Automation Prompts",
-    ko: "Figma MCP Magic - AI 기반 디자인 자동화 프롬프트"
+    en: "Figma MCP Magic - One-click Figma MCP Connection Tool",
+    ko: "Figma MCP Magic - 원클릭 Figma MCP 연결 도구"
   };
   
   const descriptions = {
-    en: "A curated collection of powerful prompts for Figma MCP (Model Context Protocol). Transform your design workflow with AI-powered automation, streamline annotations, automate handoff, and enhance documentation with our comprehensive prompt library.",
-    ko: "Figma MCP(모델 컨텍스트 프로토콜)를 위한 강력한 프롬프트의 큐레이션된 컬렉션. AI 기반 자동화로 디자인 워크플로우를 혁신하고, 주석을 간소화하고, 핸드오프를 자동화하고, 종합적인 프롬프트 라이브러리로 문서화를 향상시키세요."
+    en: "Connect Figma MCP (Model Context Protocol) with a single click and innovate your workflow with AI-powered automation.",
+    ko: "Figma MCP(모델 컨텍스트 프로토콜)를 원클릭으로 연결하고, AI 기반 자동화로 업무 프로세스를 혁신하세요."
   };
 
   return {
