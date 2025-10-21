@@ -1,15 +1,114 @@
-
+# Dependencies
 node_modules/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Production
+/build
+
+# Misc
 .DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
 .env
+.env*.local
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.next/
-dist/
-build/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Cursor/IDE
+.project/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Cursor specific
+.project/*.sqlite
+.project/*.sqlite-wal
+.project/*.sqlite-shm
+.project/complete_drafts.txt
+.project/localProjectSettings.json
+.project/attachments/files/**
+copilot-messages.log
+files/
+*.json.memory
+ice_edits.json
+silver_path_memories.json
+smart_edits.json
+
+# Keystatic (CMS)
+.keystatic/
+
+# Testing
 coverage/
+.nyc_output/
+
+# Lock files (optional - uncomment if needed)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+# bun.lockb
+
+# Archive formats
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.gz
+*.bz2
+*.xz
+
+# Windows executables and installers
+*.exe
+*.msi
+*.bat
+*.cmd
+*.com
+*.scr
+*.dll
+
+# macOS executables and disk images
+*.dmg
+*.pkg
+
+# Disk images and virtual machine files
+*.iso
+*.img
+*.vhd
+*.vmdk
+
+# Turbopack (Next.js 15+)
+.turbo/
+
+# PWA files (if applicable)
+**/public/workbox-*.js
+**/public/sw.js
+**/public/worker-*.js
+**/public/fallback-*.js
