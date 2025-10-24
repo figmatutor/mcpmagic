@@ -4,14 +4,13 @@
 *.m4a filter=lfs diff=lfs merge=lfs -text
 *.ogg filter=lfs diff=lfs merge=lfs -text
 *.webm filter=lfs diff=lfs merge=lfs -text
-
 # Video files
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.avi filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.mkv filter=lfs diff=lfs merge=lfs -text
-
 # Image files over 1MB should use LFS (disabled for now)
 # *.jpg filter=lfs diff=lfs merge=lfs -text
 # *.jpeg filter=lfs diff=lfs merge=lfs -text
 # *.png filter=lfs diff=lfs merge=lfs -text
+*.msi filter=lfs diff=lfs merge=lfs -text
