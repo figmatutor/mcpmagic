@@ -87,7 +87,7 @@ coverage/
 
 # Windows executables and installers
 *.exe
-# *.msi  # MSI files are now tracked with Git LFS
+*.msi
 *.bat
 *.cmd
 *.com
