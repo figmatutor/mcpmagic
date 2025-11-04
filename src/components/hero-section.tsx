@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { toast } from "sonner";
 
 export default function HeroSection() {
   const t = useTranslations('hero');
