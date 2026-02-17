@@ -112,3 +112,7 @@ coverage/
 **/public/sw.js
 **/public/worker-*.js
 **/public/fallback-*.js
+# Desktop build artifacts
+/artifacts/
+*.provisionprofile
+*.p12

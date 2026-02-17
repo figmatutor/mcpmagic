@@ -1,0 +1,404 @@
+name: Build Desktop (MAS + MSIX)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-mas:
+    runs-on: macos-latest
+    timeout-minutes: 120
+    env:
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      SIGNING_IDENTITY_APPSTORE: ${{ secrets.SIGNING_IDENTITY_APPSTORE }}
+      INSTALLER_IDENTITY: ${{ secrets.INSTALLER_IDENTITY }}
+      SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+      SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+      INSTALLER_CERTIFICATE_BASE64: ${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}
+      PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate MAS secrets
+        run: |
+          set -euo pipefail
+          required=(
+            APPLE_ID
+            APPLE_PASSWORD
+            APPLE_TEAM_ID
+            SIGNING_IDENTITY_APPSTORE
+            INSTALLER_IDENTITY
+            SIGNING_CERTIFICATE_BASE64
+            SIGNING_CERTIFICATE_PASSWORD
+            INSTALLER_CERTIFICATE_BASE64
+            PROVISIONING_PROFILE_BASE64
+          )
+          for key in "${required[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::Missing required secret: ${key}"
+              exit 1
+            fi
+          done
+
+      - name: Prepare signing
+        run: |
+          set -euo pipefail
+
+          # Decode certificates and provisioning profile
+          echo "$SIGNING_CERTIFICATE_BASE64" | base64 --decode > /tmp/signing-cert.p12
+          echo "$INSTALLER_CERTIFICATE_BASE64" | base64 --decode > /tmp/installer-cert.p12
+          echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/profile.provisionprofile
+
+          # Create keychain
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+
+          # Import certificates (allow both codesign AND productbuild)
+          security import /tmp/signing-cert.p12 -k build.keychain \
+            -P "$SIGNING_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign \
+            -T /usr/bin/productbuild
+          security import /tmp/installer-cert.p12 -k build.keychain \
+            -P "$SIGNING_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign \
+            -T /usr/bin/productbuild
+
+          # Allow codesign/productbuild to access keychain without prompting
+          security list-keychains -d user -s build.keychain
+          security set-key-partition-list -S apple-tool:,apple: \
+            -s -k "$KEYCHAIN_PASSWORD" build.keychain
+
+          # Verify certificates
+          security find-identity -v -p codesigning build.keychain
+
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/profile.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          # Cleanup temp files
+          rm -f /tmp/signing-cert.p12 /tmp/installer-cert.p12
+
+      - name: Build MAS
+        run: |
+          set -euo pipefail
+          ROOT="$GITHUB_WORKSPACE"
+          TMP_DIR="${TMPDIR:-/tmp}/mcpmagic-talktofigma-desktop"
+          export TMP_DIR
+
+          rm -rf "$TMP_DIR"
+          git clone --depth=1 https://github.com/grab/TalkToFigmaDesktop "$TMP_DIR"
+
+          node -e "const fs=require('fs');const path=require('path');const meta=require('./desktop/branding/metadata.json');const pkgPath=path.join(process.env.TMP_DIR,'package.json');const p=JSON.parse(fs.readFileSync(pkgPath,'utf8'));p.name=meta.appName.toLowerCase().replace(/[^a-z0-9.-]/g,'-');p.productName=meta.productName;p.description=meta.description;fs.writeFileSync(pkgPath,JSON.stringify(p,null,2));"
+
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const meta = require('./desktop/branding/metadata.json');
+            const forgePath = path.join(process.env.TMP_DIR, 'forge.config.ts');
+            let c = fs.readFileSync(forgePath, 'utf8');
+
+            // Replace appBundleId (supports both single and double quotes)
+            const bundleIdBefore = c.match(/appBundleId:\s*['\"]([^'\"]*)['\"]/) || [];
+            c = c.replace(/appBundleId:\s*['\"'][^'\"]*['\"']/, \`appBundleId: '\${meta.bundleId}'\`);
+            const bundleIdAfter = c.match(/appBundleId:\s*['\"]([^'\"]*)['\"]/) || [];
+
+            // Replace name
+            const nameBefore = c.match(/name:\s*['\"]([^'\"]*)['\"]/) || [];
+            c = c.replace(/name:\s*['\"'][^'\"]*['\"']/, \`name: '\${meta.productName}'\`);
+            const nameAfter = c.match(/name:\s*['\"]([^'\"]*)['\"]/) || [];
+
+            // Replace executableName
+            const execName = meta.productName.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
+            const execBefore = c.match(/executableName:\s*['\"]([^'\"]*)['\"]/) || [];
+            c = c.replace(/executableName:\s*['\"'][^'\"]*['\"']/, \`executableName: '\${execName}'\`);
+            const execAfter = c.match(/executableName:\s*['\"]([^'\"]*)['\"]/) || [];
+
+            fs.writeFileSync(forgePath, c);
+
+            // Verify replacements
+            console.log('Bundle ID: ' + bundleIdBefore[1] + ' → ' + bundleIdAfter[1]);
+            console.log('Name: ' + nameBefore[1] + ' → ' + nameAfter[1]);
+            console.log('Executable: ' + execBefore[1] + ' → ' + execAfter[1]);
+
+            if (bundleIdAfter[1] !== meta.bundleId) {
+              console.error('ERROR: Bundle ID replacement failed!');
+              console.error('Expected: ' + meta.bundleId);
+              console.error('Got: ' + bundleIdAfter[1]);
+              process.exit(1);
+            }
+          "
+          mkdir -p "$TMP_DIR/public"
+          cp "$ROOT/desktop/branding/icon.icns" "$TMP_DIR/public/icon.icns"
+          cp "$ROOT/desktop/branding/icon.ico" "$TMP_DIR/public/icon.ico"
+          cp "$ROOT/desktop/branding/icon.png" "$TMP_DIR/public/icon.png"
+          if [ -d "$ROOT/desktop/branding/icon.iconset" ]; then
+            cp -R "$ROOT/desktop/branding/icon.iconset" "$TMP_DIR/public/"
+          fi
+
+          cd "$TMP_DIR"
+          npm ci
+
+          VERSION=$(node -p "require('./package.json').version")
+          BUILD_VERSION="${GITHUB_RUN_NUMBER}"
+
+          # Inject buildVersion (CFBundleVersion) into forge.config.ts
+          node -e "
+            const fs = require('fs');
+            let c = fs.readFileSync('forge.config.ts', 'utf8');
+            if (/buildVersion:\s*'[^']*'/.test(c)) {
+              c = c.replace(/buildVersion:\s*'[^']*'/, \"buildVersion: '${BUILD_VERSION}'\");
+            } else {
+              c = c.replace(/packagerConfig:\s*{/, \"packagerConfig: {\\n    buildVersion: '${BUILD_VERSION}',\");
+            }
+            fs.writeFileSync('forge.config.ts', c);
+          "
+
+          export PLATFORM=mas
+          export PROVISIONING_PROFILE=/tmp/profile.provisionprofile
+          export CI=1
+          export DEBUG=electron-osx-sign*,electron-packager,electron-forge:*
+          mkdir -p "$ROOT/artifacts"
+
+          npm run make -- --targets=pkg --platform=mas --arch=universal --verbose > "$ROOT/artifacts/mas-make.log" 2>&1 &
+          BUILD_PID=$!
+          START_TS=$(date +%s)
+          MAX_SECONDS=$((40 * 60))
+
+          while kill -0 "$BUILD_PID" 2>/dev/null; do
+            sleep 60
+            NOW_TS=$(date +%s)
+            ELAPSED=$((NOW_TS - START_TS))
+            echo "::notice::Build MAS still running (${ELAPSED}s elapsed) at $(date -u +%FT%TZ)"
+            if [ "$ELAPSED" -ge "$MAX_SECONDS" ]; then
+              echo "::error::Build MAS exceeded ${MAX_SECONDS}s watchdog timeout; terminating process"
+              kill -TERM "$BUILD_PID" || true
+              sleep 10
+              kill -KILL "$BUILD_PID" || true
+              wait "$BUILD_PID" || true
+              echo "----- Last 300 lines of mas-make.log -----"
+              tail -n 300 "$ROOT/artifacts/mas-make.log" || true
+              exit 1
+            fi
+          done
+
+          wait "$BUILD_PID"
+          cat "$ROOT/artifacts/mas-make.log"
+
+          if ! find "$TMP_DIR/out/make" -name "*-universal.pkg" -print -quit | grep -q .; then
+            echo "::error::Universal MAS pkg was not produced (expected *-universal.pkg)"
+            exit 1
+          fi
+
+          echo "$VERSION" > "$ROOT/artifacts/release_version.txt"
+          echo "$BUILD_VERSION" > "$ROOT/artifacts/build_version.txt"
+          if [ -d "$TMP_DIR/out" ]; then
+            cp -R "$TMP_DIR/out"/* "$ROOT/artifacts/"
+          fi
+
+          rm -rf "$TMP_DIR"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mas-artifacts
+          path: artifacts/**
+
+      - name: Extract version
+        id: version
+        run: |
+          echo "version=$(cat artifacts/release_version.txt | tr -d '\n')" >> $GITHUB_OUTPUT
+
+  build-msix:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      MSIX_IDENTITY_NAME: ${{ secrets.MSIX_IDENTITY_NAME }}
+      MSIX_PUBLISHER: ${{ secrets.MSIX_PUBLISHER }}
+      MSIX_PUBLISHER_DISPLAY_NAME: ${{ secrets.MSIX_PUBLISHER_DISPLAY_NAME }}
+      MSIX_PACKAGE_NAME: ${{ secrets.MSIX_PACKAGE_NAME }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate MSIX secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            MSIX_IDENTITY_NAME
+            MSIX_PUBLISHER
+            MSIX_PUBLISHER_DISPLAY_NAME
+            MSIX_PACKAGE_NAME
+          )
+          for key in "${required[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::Missing required secret: ${key}"
+              exit 1
+            fi
+          done
+
+      - name: Validate MSIX identity format
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          identity="${MSIX_IDENTITY_NAME}"
+          identity_len=${#identity}
+          if [ "$identity_len" -lt 3 ] || [ "$identity_len" -gt 50 ]; then
+            echo "::error::MSIX_IDENTITY_NAME must be between 3 and 50 characters (got ${identity_len})"
+            exit 1
+          fi
+          if [[ ! "$identity" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$ ]]; then
+            echo "::error::MSIX_IDENTITY_NAME has invalid format: ${identity}"
+            echo "::error::Use only letters, numbers, '.' and '-', and do not end with '.' or '-'"
+            exit 1
+          fi
+
+          publisher="${MSIX_PUBLISHER}"
+          if [[ ! "$publisher" =~ (^|,)CN=.+ ]]; then
+            echo "::error::MSIX_PUBLISHER must be a Distinguished Name containing CN=..."
+            exit 1
+          fi
+
+      - name: Build MSIX
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$GITHUB_WORKSPACE"
+          RAW_TMP_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/mcpmagic-talktofigma-desktop"
+          if command -v cygpath >/dev/null 2>&1; then
+            TMP_DIR="$(cygpath -u "$RAW_TMP_DIR" 2>/dev/null || echo "$RAW_TMP_DIR")"
+          else
+            TMP_DIR="$RAW_TMP_DIR"
+          fi
+          export TMP_DIR
+
+          rm -rf "$TMP_DIR"
+          git clone --depth=1 https://github.com/grab/TalkToFigmaDesktop "$TMP_DIR"
+
+          # Keep upstream package.json/forge packagerConfig for MSIX to avoid
+          # manifest executable-name mismatch during makeappx validation.
+
+          mkdir -p "$TMP_DIR/public"
+          cp "$ROOT/desktop/branding/icon.ico" "$TMP_DIR/public/icon.ico"
+          cp "$ROOT/desktop/branding/icon.png" "$TMP_DIR/public/icon.png"
+
+          cd "$TMP_DIR"
+          npm ci
+
+          VERSION=$(node -p "require('./package.json').version")
+          BUILD_VERSION="${VERSION}.${GITHUB_RUN_ATTEMPT}"
+
+          export PLATFORM=msstore
+          export APP_VERSION="$BUILD_VERSION"
+          export CI=1
+          export DEBUG=electron-forge:*,electron-windows-msix*
+          mkdir -p "$ROOT/artifacts"
+
+          npm run make -- --targets=msix --verbose 2>&1 | tee "$ROOT/artifacts/msix-make.log"
+
+          echo "$VERSION" > "$ROOT/artifacts/release_version.txt"
+          echo "$BUILD_VERSION" > "$ROOT/artifacts/build_version.txt"
+          if [ -d "$TMP_DIR/out" ]; then
+            cp -R "$TMP_DIR/out"/* "$ROOT/artifacts/"
+          fi
+
+          rm -rf "$TMP_DIR"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msix-artifacts
+          path: artifacts/**
+
+      - name: Extract version
+        id: version
+        run: |
+          echo "version=$(cat artifacts/release_version.txt | tr -d '\n')" >> $GITHUB_OUTPUT
+
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs:
+      - build-mas
+      - build-msix
+    if: ${{ needs.build-mas.result == 'success' && needs.build-msix.result == 'success' }}
+    steps:
+      - name: Download MAS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mas-artifacts
+          path: artifacts/mas
+
+      - name: Download MSIX artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: msix-artifacts
+          path: artifacts/msix
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=""
+          if [ -f artifacts/mas/release_version.txt ]; then
+            VERSION="$(tr -d '\r\n' < artifacts/mas/release_version.txt)"
+          fi
+          if [ -z "$VERSION" ] && [ -f artifacts/msix/release_version.txt ]; then
+            VERSION="$(tr -d '\r\n' < artifacts/msix/release_version.txt)"
+          fi
+          if [ -z "$VERSION" ]; then
+            echo "::error::release_version.txt not found or empty"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          mkdir -p release-assets
+
+          PKG_SRC="$(find artifacts/mas -type f -name '*-universal.pkg' | head -n1 || true)"
+          if [ -z "$PKG_SRC" ]; then
+            PKG_SRC="$(find artifacts/mas -type f -name '*.pkg' | head -n1 || true)"
+          fi
+          if [ -z "$PKG_SRC" ]; then
+            echo "::error::No .pkg artifact found"
+            exit 1
+          fi
+
+          MSIX_SRC="$(find artifacts/msix -type f -name '*.msix' | head -n1 || true)"
+          if [ -z "$MSIX_SRC" ]; then
+            echo "::error::No .msix artifact found"
+            exit 1
+          fi
+
+          cp "$PKG_SRC" "release-assets/MCP.Magic-${VERSION}-universal.pkg"
+          cp "$MSIX_SRC" "release-assets/MCP.Magic-${VERSION}.msix"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          files: |
+            release-assets/*.pkg
+            release-assets/*.msix
+          fail_on_unmatched_files: false
