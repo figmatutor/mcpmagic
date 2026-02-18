@@ -257,7 +257,7 @@ jobs:
           xcrun altool --upload-app \
             --file "$PKG_FILE" \
             --type macos \
-            --apple-id "$APPLE_ID" \
+            --username "$APPLE_ID" \
             --password "$APPLE_PASSWORD" \
             --team-id "$APPLE_TEAM_ID"
           echo "Upload to App Store Connect completed successfully!"
