@@ -3,8 +3,43 @@ name: Build Desktop (MAS + MSIX)
 on:
   workflow_dispatch:
 
+concurrency:
+  group: build-desktop
+  cancel-in-progress: false
+
 jobs:
+  bump-build-number:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      build_version: ${{ steps.bump.outputs.build_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bump build number
+        id: bump
+        run: |
+          set -euo pipefail
+          CURRENT=$(tr -d '\r\n' < desktop/BUILD_NUMBER)
+          NEXT=$((CURRENT + 1))
+          echo "$NEXT" > desktop/BUILD_NUMBER
+          echo "build_version=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Build version: $CURRENT → $NEXT"
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add desktop/BUILD_NUMBER
+          git commit -m "chore: bump build number to $(tr -d '\r\n' < desktop/BUILD_NUMBER)"
+          git push
+
   build-mas:
+    needs: bump-build-number
     runs-on: macos-latest
     timeout-minutes: 120
     env:
@@ -149,7 +184,7 @@ jobs:
           npm ci
 
           VERSION=$(node -p "require('./package.json').version")
-          BUILD_VERSION="$(( GITHUB_RUN_NUMBER + 100 ))"
+          BUILD_VERSION="${{ needs.bump-build-number.outputs.build_version }}"
 
           # Inject buildVersion (CFBundleVersion) into forge.config.ts
           node -e "
@@ -207,6 +242,26 @@ jobs:
 
           rm -rf "$TMP_DIR"
 
+      - name: Upload to App Store Connect
+        run: |
+          set -euo pipefail
+          PKG_FILE="$(find artifacts -name '*-universal.pkg' -print -quit)"
+          if [ -z "$PKG_FILE" ]; then
+            PKG_FILE="$(find artifacts -name '*.pkg' -print -quit)"
+          fi
+          if [ -z "$PKG_FILE" ]; then
+            echo "::error::No .pkg file found for App Store upload"
+            exit 1
+          fi
+          echo "Uploading $PKG_FILE to App Store Connect..."
+          xcrun altool --upload-app \
+            --file "$PKG_FILE" \
+            --type macos \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID"
+          echo "Upload to App Store Connect completed successfully!"
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -219,6 +274,7 @@ jobs:
           echo "version=$(cat artifacts/release_version.txt | tr -d '\n')" >> $GITHUB_OUTPUT
 
   build-msix:
+    needs: bump-build-number
     runs-on: windows-latest
     timeout-minutes: 30
     env:
@@ -302,7 +358,7 @@ jobs:
           npm ci
 
           VERSION=$(node -p "require('./package.json').version")
-          BUILD_VERSION="${VERSION}.${GITHUB_RUN_ATTEMPT}"
+          BUILD_VERSION="${VERSION}.${{ needs.bump-build-number.outputs.build_version }}"
 
           export PLATFORM=msstore
           export APP_VERSION="$BUILD_VERSION"
