@@ -149,7 +149,7 @@ jobs:
           npm ci
 
           VERSION=$(node -p "require('./package.json').version")
-          BUILD_VERSION="${GITHUB_RUN_NUMBER}"
+          BUILD_VERSION="$(( GITHUB_RUN_NUMBER + 100 ))"
 
           # Inject buildVersion (CFBundleVersion) into forge.config.ts
           node -e "
