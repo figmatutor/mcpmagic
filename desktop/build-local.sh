@@ -92,12 +92,68 @@ cmd_setup() {
     console.log('  name:', meta.productName);
   "
 
+  # Step 3.5: Apply metadata-based text branding
+  log "Applying metadata-based text branding ..."
+  node -e "
+    const fs = require('fs');
+    const path = require('path');
+    const meta = JSON.parse(fs.readFileSync('$METADATA', 'utf8'));
+    const projectRoot = '$BUILD_DIR';
+
+    const productName = meta.productName || meta.appName || 'MCP Magic';
+    const terminalProductName = meta.terminalProductName || productName.toUpperCase();
+    const deepLinkScheme = (meta.deepLinkScheme || meta.appName || productName)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+
+    const replaceInFile = (relPath, replacements) => {
+      const filePath = path.join(projectRoot, relPath);
+      if (!fs.existsSync(filePath)) return;
+      let content = fs.readFileSync(filePath, 'utf8');
+      let changed = false;
+      for (const [from, to] of replacements) {
+        if (content.includes(from)) {
+          content = content.split(from).join(to);
+          changed = true;
+        }
+      }
+      if (changed) fs.writeFileSync(filePath, content);
+    };
+
+    replaceInFile('index.html', [
+      ['<title>Talk To Figma</title>', '<title>' + productName + '</title>'],
+    ]);
+
+    replaceInFile('src/App.tsx', [
+      ['TalkToFigma Desktop v2.0.0', terminalProductName + ' Desktop v2.0.0'],
+      ['talktofigma://', deepLinkScheme + '://'],
+    ]);
+
+    replaceInFile('src/components/app-sidebar.tsx', [
+      ['alt=\"TalkToFigma\"', 'alt=\"' + productName + '\"'],
+      ['>TalkToFigma</span>', '>' + productName + '</span>'],
+    ]);
+
+    replaceInFile('src/pages/Settings.tsx', [
+      ['Configure TalkToFigma Desktop with your preferred MCP client', 'Configure ' + productName + ' with your preferred MCP client'],
+    ]);
+
+    replaceInFile('src/pages/Help.tsx', [
+      ['Learn how to use TalkToFigma Desktop with our interactive tutorial', 'Learn how to use ' + productName + ' with our interactive tutorial'],
+      ['Follow our step-by-step tutorial to get started with TalkToFigma Desktop.', 'Follow our step-by-step tutorial to get started with ' + productName + '.'],
+    ]);
+  "
+
   # Step 4: Copy icon assets
   log "Copying icon assets ..."
   mkdir -p "$BUILD_DIR/public"
   cp "$BRANDING_DIR/icon.icns" "$BUILD_DIR/public/icon.icns"
   cp "$BRANDING_DIR/icon.ico"  "$BUILD_DIR/public/icon.ico"
   cp "$BRANDING_DIR/icon.png"  "$BUILD_DIR/public/icon.png"
+  cp "$BRANDING_DIR/trayTemplate.png" "$BUILD_DIR/public/trayTemplate.png"
+  cp "$BRANDING_DIR/trayTemplate_active.png" "$BUILD_DIR/public/trayTemplate_active.png"
+  cp "$BRANDING_DIR/tray_dark.png" "$BUILD_DIR/public/tray_dark.png"
+  cp "$BRANDING_DIR/tray_dark_active.png" "$BUILD_DIR/public/tray_dark_active.png"
   if [[ -d "$BRANDING_DIR/icon.iconset" ]]; then
     cp -R "$BRANDING_DIR/icon.iconset" "$BUILD_DIR/public/"
   fi

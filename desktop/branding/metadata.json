@@ -2,7 +2,7 @@
   "appName": "MCP Magic",
   "productName": "MCP Magic",
   "bundleId": "kr.co.metadata.mcp",
-  "description": "MCP Magic - Connect Figma to Cursor AI",
+  "description": "A powerful desktop application bridging Figma and AI tools via Model Context Protocol. Seamless integration between Figma designs and AI assistants.",
   "vendor": "High Stand",
   "copyright": "Copyright © 2025 High Stand. All rights reserved.",
   "macAppCategory": "public.app-category.developer-tools",
@@ -12,5 +12,7 @@
     "publisher": "",
     "publisherDisplayName": "",
     "packageName": ""
-  }
+  },
+  "terminalProductName": "MCP MAGIC",
+  "deepLinkScheme": "mcpmagic"
 }

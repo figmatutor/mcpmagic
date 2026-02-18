@@ -172,10 +172,63 @@ jobs:
               process.exit(1);
             }
           "
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const meta = require('./desktop/branding/metadata.json');
+            const projectRoot = process.env.TMP_DIR;
+
+            const productName = meta.productName || meta.appName || 'MCP Magic';
+            const terminalProductName = meta.terminalProductName || productName.toUpperCase();
+            const deepLinkScheme = (meta.deepLinkScheme || meta.appName || productName)
+              .toLowerCase()
+              .replace(/[^a-z0-9]/g, '');
+
+            const replaceInFile = (relPath, replacements) => {
+              const filePath = path.join(projectRoot, relPath);
+              if (!fs.existsSync(filePath)) return;
+              let content = fs.readFileSync(filePath, 'utf8');
+              let changed = false;
+              for (const [from, to] of replacements) {
+                if (content.includes(from)) {
+                  content = content.split(from).join(to);
+                  changed = true;
+                }
+              }
+              if (changed) fs.writeFileSync(filePath, content);
+            };
+
+            replaceInFile('index.html', [
+              ['<title>Talk To Figma</title>', '<title>' + productName + '</title>'],
+            ]);
+
+            replaceInFile('src/App.tsx', [
+              ['TalkToFigma Desktop v2.0.0', terminalProductName + ' Desktop v2.0.0'],
+              ['talktofigma://', deepLinkScheme + '://'],
+            ]);
+
+            replaceInFile('src/components/app-sidebar.tsx', [
+              ['alt=\"TalkToFigma\"', 'alt=\"' + productName + '\"'],
+              ['>TalkToFigma</span>', '>' + productName + '</span>'],
+            ]);
+
+            replaceInFile('src/pages/Settings.tsx', [
+              ['Configure TalkToFigma Desktop with your preferred MCP client', 'Configure ' + productName + ' with your preferred MCP client'],
+            ]);
+
+            replaceInFile('src/pages/Help.tsx', [
+              ['Learn how to use TalkToFigma Desktop with our interactive tutorial', 'Learn how to use ' + productName + ' with our interactive tutorial'],
+              ['Follow our step-by-step tutorial to get started with TalkToFigma Desktop.', 'Follow our step-by-step tutorial to get started with ' + productName + '.'],
+            ]);
+          "
           mkdir -p "$TMP_DIR/public"
           cp "$ROOT/desktop/branding/icon.icns" "$TMP_DIR/public/icon.icns"
           cp "$ROOT/desktop/branding/icon.ico" "$TMP_DIR/public/icon.ico"
           cp "$ROOT/desktop/branding/icon.png" "$TMP_DIR/public/icon.png"
+          cp "$ROOT/desktop/branding/trayTemplate.png" "$TMP_DIR/public/trayTemplate.png"
+          cp "$ROOT/desktop/branding/trayTemplate_active.png" "$TMP_DIR/public/trayTemplate_active.png"
+          cp "$ROOT/desktop/branding/tray_dark.png" "$TMP_DIR/public/tray_dark.png"
+          cp "$ROOT/desktop/branding/tray_dark_active.png" "$TMP_DIR/public/tray_dark_active.png"
           if [ -d "$ROOT/desktop/branding/icon.iconset" ]; then
             cp -R "$ROOT/desktop/branding/icon.iconset" "$TMP_DIR/public/"
           fi
@@ -254,13 +307,26 @@ jobs:
             exit 1
           fi
           echo "Uploading $PKG_FILE to App Store Connect..."
-          xcrun altool --upload-app \
-            --file "$PKG_FILE" \
-            --type macos \
-            --username "$APPLE_ID" \
-            --password "$APPLE_PASSWORD" \
-            --team-id "$APPLE_TEAM_ID"
-          echo "Upload to App Store Connect completed successfully!"
+          MAX_RETRIES=3
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES..."
+            if xcrun altool --upload-app \
+              --file "$PKG_FILE" \
+              --type macos \
+              --username "$APPLE_ID" \
+              --password "$APPLE_PASSWORD" \
+              --team-id "$APPLE_TEAM_ID"; then
+              echo "Upload to App Store Connect completed successfully!"
+              exit 0
+            fi
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              WAIT=$((60 * i))
+              echo "::warning::Upload failed (attempt $i). Retrying in ${WAIT}s..."
+              sleep "$WAIT"
+            fi
+          done
+          echo "::error::Upload failed after $MAX_RETRIES attempts"
+          exit 1
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -350,9 +416,62 @@ jobs:
           # Keep upstream package.json/forge packagerConfig for MSIX to avoid
           # manifest executable-name mismatch during makeappx validation.
 
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const meta = require('./desktop/branding/metadata.json');
+            const projectRoot = process.env.TMP_DIR;
+
+            const productName = meta.productName || meta.appName || 'MCP Magic';
+            const terminalProductName = meta.terminalProductName || productName.toUpperCase();
+            const deepLinkScheme = (meta.deepLinkScheme || meta.appName || productName)
+              .toLowerCase()
+              .replace(/[^a-z0-9]/g, '');
+
+            const replaceInFile = (relPath, replacements) => {
+              const filePath = path.join(projectRoot, relPath);
+              if (!fs.existsSync(filePath)) return;
+              let content = fs.readFileSync(filePath, 'utf8');
+              let changed = false;
+              for (const [from, to] of replacements) {
+                if (content.includes(from)) {
+                  content = content.split(from).join(to);
+                  changed = true;
+                }
+              }
+              if (changed) fs.writeFileSync(filePath, content);
+            };
+
+            replaceInFile('index.html', [
+              ['<title>Talk To Figma</title>', '<title>' + productName + '</title>'],
+            ]);
+
+            replaceInFile('src/App.tsx', [
+              ['TalkToFigma Desktop v2.0.0', terminalProductName + ' Desktop v2.0.0'],
+              ['talktofigma://', deepLinkScheme + '://'],
+            ]);
+
+            replaceInFile('src/components/app-sidebar.tsx', [
+              ['alt=\"TalkToFigma\"', 'alt=\"' + productName + '\"'],
+              ['>TalkToFigma</span>', '>' + productName + '</span>'],
+            ]);
+
+            replaceInFile('src/pages/Settings.tsx', [
+              ['Configure TalkToFigma Desktop with your preferred MCP client', 'Configure ' + productName + ' with your preferred MCP client'],
+            ]);
+
+            replaceInFile('src/pages/Help.tsx', [
+              ['Learn how to use TalkToFigma Desktop with our interactive tutorial', 'Learn how to use ' + productName + ' with our interactive tutorial'],
+              ['Follow our step-by-step tutorial to get started with TalkToFigma Desktop.', 'Follow our step-by-step tutorial to get started with ' + productName + '.'],
+            ]);
+          "
           mkdir -p "$TMP_DIR/public"
           cp "$ROOT/desktop/branding/icon.ico" "$TMP_DIR/public/icon.ico"
           cp "$ROOT/desktop/branding/icon.png" "$TMP_DIR/public/icon.png"
+          cp "$ROOT/desktop/branding/trayTemplate.png" "$TMP_DIR/public/trayTemplate.png"
+          cp "$ROOT/desktop/branding/trayTemplate_active.png" "$TMP_DIR/public/trayTemplate_active.png"
+          cp "$ROOT/desktop/branding/tray_dark.png" "$TMP_DIR/public/tray_dark.png"
+          cp "$ROOT/desktop/branding/tray_dark_active.png" "$TMP_DIR/public/tray_dark_active.png"
 
           cd "$TMP_DIR"
           npm ci
