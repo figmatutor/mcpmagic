@@ -631,7 +631,7 @@ jobs:
       - build-mas
       - upload-mas
       - build-msix
-    if: ${{ needs.build-mas.result == 'success' && (needs.upload-mas.result == 'success' || needs.upload-mas.result == 'skipped') && needs.build-msix.result == 'success' }}
+    if: ${{ always() && needs.build-mas.result == 'success' && (needs['upload-mas'].result == 'success' || needs['upload-mas'].result == 'skipped') && needs.build-msix.result == 'success' }}
     steps:
       - name: Download MAS artifacts
         uses: actions/download-artifact@v4
