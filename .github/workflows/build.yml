@@ -57,12 +57,14 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 120
     env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       SIGNING_IDENTITY_APPSTORE: ${{ secrets.SIGNING_IDENTITY_APPSTORE }}
       INSTALLER_IDENTITY: ${{ secrets.INSTALLER_IDENTITY }}
       SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
       SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
       INSTALLER_CERTIFICATE_BASE64: ${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}
       PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+      PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -90,12 +92,12 @@ jobs:
         run: |
           set -euo pipefail
           required=(
+            APPLE_TEAM_ID
             SIGNING_IDENTITY_APPSTORE
             INSTALLER_IDENTITY
             SIGNING_CERTIFICATE_BASE64
             SIGNING_CERTIFICATE_PASSWORD
             INSTALLER_CERTIFICATE_BASE64
-            PROVISIONING_PROFILE_BASE64
           )
           for key in "${required[@]}"; do
             if [ -z "${!key:-}" ]; then
@@ -103,6 +105,10 @@ jobs:
               exit 1
             fi
           done
+          if [ -z "${PROVISIONING_PROFILE_BASE64:-}" ] && [ -z "${PROVISIONING_PROFILE:-}" ]; then
+            echo "::error::Missing provisioning profile secret: set PROVISIONING_PROFILE_BASE64 or PROVISIONING_PROFILE"
+            exit 1
+          fi
 
       - name: Prepare signing
         run: |
@@ -111,7 +117,17 @@ jobs:
           # Decode certificates and provisioning profile
           echo "$SIGNING_CERTIFICATE_BASE64" | base64 --decode > /tmp/signing-cert.p12
           echo "$INSTALLER_CERTIFICATE_BASE64" | base64 --decode > /tmp/installer-cert.p12
-          echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/profile.provisionprofile
+          if [ -n "${PROVISIONING_PROFILE_BASE64:-}" ]; then
+            echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/profile.provisionprofile
+          elif [ -n "${PROVISIONING_PROFILE:-}" ] && [ -f "${PROVISIONING_PROFILE}" ]; then
+            cp "${PROVISIONING_PROFILE}" /tmp/profile.provisionprofile
+          elif [ -n "${PROVISIONING_PROFILE:-}" ]; then
+            # Fallback: allow raw base64 payload in PROVISIONING_PROFILE
+            echo "$PROVISIONING_PROFILE" | base64 --decode > /tmp/profile.provisionprofile
+          else
+            echo "::error::No provisioning profile value provided"
+            exit 1
+          fi
 
           # Create keychain
           KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
@@ -147,6 +163,7 @@ jobs:
 
       - name: Build MAS
         env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           FIGMA_CLIENT_ID: ${{ secrets.FIGMA_CLIENT_ID }}
           FIGMA_CLIENT_SECRET: ${{ secrets.FIGMA_CLIENT_SECRET }}
           GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
