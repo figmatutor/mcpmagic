@@ -7,6 +7,11 @@ on:
         description: Version to build (e.g. 2.0.9.20)
         required: true
         type: string
+      upload_mas:
+        description: Upload MAS pkg to App Store Connect
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: build-desktop
@@ -359,7 +364,7 @@ jobs:
 
   upload-mas:
     needs: build-mas
-    if: ${{ needs.build-mas.result == 'success' }}
+    if: ${{ needs.build-mas.result == 'success' && github.event.inputs.upload_mas == 'true' }}
     runs-on: macos-latest
     timeout-minutes: 30
     env:
@@ -626,7 +631,7 @@ jobs:
       - build-mas
       - upload-mas
       - build-msix
-    if: ${{ needs.build-mas.result == 'success' && needs.upload-mas.result == 'success' && needs.build-msix.result == 'success' }}
+    if: ${{ needs.build-mas.result == 'success' && (needs.upload-mas.result == 'success' || needs.upload-mas.result == 'skipped') && needs.build-msix.result == 'success' }}
     steps:
       - name: Download MAS artifacts
         uses: actions/download-artifact@v4
