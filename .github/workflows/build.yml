@@ -582,16 +582,28 @@ jobs:
             } else {
               c = c.replace(/packagerConfig:\s*{/, \"packagerConfig: {\\n    appVersion: '${VERSION}',\");
             }
-            if (/packageMinOSVersion:\s*'[^']*'/.test(c)) {
-              c = c.replace(/packageMinOSVersion:\s*'[^']*'/, \"packageMinOSVersion: '\" + minOsVersion + \"'\");
-            } else {
-              c = c.replace(/new MakerMSIX\\(\\{/, \"new MakerMSIX({\\n      packageMinOSVersion: '\" + minOsVersion + \"',\");
-            }
-            if (/packageMaxOSVersionTested:\s*'[^']*'/.test(c)) {
-              c = c.replace(/packageMaxOSVersionTested:\s*'[^']*'/, \"packageMaxOSVersionTested: '\" + maxTestedVersion + \"'\");
-            } else {
-              c = c.replace(/new MakerMSIX\\(\\{/, \"new MakerMSIX({\\n      packageMaxOSVersionTested: '\" + maxTestedVersion + \"',\");
-            }
+            const setManifestVariable = (key, value) => {
+              const re = new RegExp(key + \":\\\\s*'[^']*'\");
+              if (re.test(c)) {
+                c = c.replace(re, key + \": '\" + value + \"'\");
+                return;
+              }
+              if (/manifestVariables:\\s*\\{/.test(c)) {
+                c = c.replace(
+                  /manifestVariables:\\s*\\{/,
+                  \"manifestVariables: {\\n        \" + key + \": '\" + value + \"',\"
+                );
+                return;
+              }
+              // Fallback for unexpected upstream config shape.
+              c = c.replace(
+                /new MakerMSIX\\(\\{/,
+                \"new MakerMSIX({\\n      manifestVariables: {\\n        \" + key + \": '\" + value + \"',\\n      },\"
+              );
+            };
+
+            setManifestVariable('packageMinOSVersion', minOsVersion);
+            setManifestVariable('packageMaxOSVersionTested', maxTestedVersion);
             fs.writeFileSync('forge.config.ts', c);
           "
 
