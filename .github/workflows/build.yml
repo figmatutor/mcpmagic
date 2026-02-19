@@ -570,10 +570,22 @@ jobs:
           node -e "
             const fs = require('fs');
             let c = fs.readFileSync('forge.config.ts', 'utf8');
+            const minOsVersion = '10.0.17763.0';
+            const maxTestedVersion = '10.0.26100.0';
             if (/appVersion:\s*'[^']*'/.test(c)) {
               c = c.replace(/appVersion:\s*'[^']*'/, \"appVersion: '${VERSION}'\");
             } else {
               c = c.replace(/packagerConfig:\s*{/, \"packagerConfig: {\\n    appVersion: '${VERSION}',\");
+            }
+            if (/packageMinOSVersion:\s*'[^']*'/.test(c)) {
+              c = c.replace(/packageMinOSVersion:\s*'[^']*'/, \"packageMinOSVersion: '\" + minOsVersion + \"'\");
+            } else {
+              c = c.replace(/new MakerMSIX\\(\\{/, \"new MakerMSIX({\\n      packageMinOSVersion: '\" + minOsVersion + \"',\");
+            }
+            if (/packageMaxOSVersionTested:\s*'[^']*'/.test(c)) {
+              c = c.replace(/packageMaxOSVersionTested:\s*'[^']*'/, \"packageMaxOSVersionTested: '\" + maxTestedVersion + \"'\");
+            } else {
+              c = c.replace(/new MakerMSIX\\(\\{/, \"new MakerMSIX({\\n      packageMaxOSVersionTested: '\" + maxTestedVersion + \"',\");
             }
             fs.writeFileSync('forge.config.ts', c);
           "
