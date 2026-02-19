@@ -2,50 +2,61 @@ name: Build Desktop (MAS + MSIX)
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: Version to build (e.g. 2.0.9.20)
+        required: true
+        type: string
 
 concurrency:
   group: build-desktop
   cancel-in-progress: false
 
 jobs:
-  bump-build-number:
+  resolve-version:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions:
-      contents: write
     outputs:
-      build_version: ${{ steps.bump.outputs.build_version }}
+      full_version: ${{ steps.resolve.outputs.full_version }}
+      mas_version: ${{ steps.resolve.outputs.mas_version }}
+      mas_build_number: ${{ steps.resolve.outputs.mas_build_number }}
+      windows_version: ${{ steps.resolve.outputs.windows_version }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Bump build number
-        id: bump
+      - name: Resolve version input
+        id: resolve
+        shell: bash
         run: |
           set -euo pipefail
-          CURRENT=$(tr -d '\r\n' < desktop/BUILD_NUMBER)
-          NEXT=$((CURRENT + 1))
-          echo "$NEXT" > desktop/BUILD_NUMBER
-          echo "build_version=$NEXT" >> "$GITHUB_OUTPUT"
-          echo "Build version: $CURRENT → $NEXT"
+          VERSION="${{ github.event.inputs.version || '' }}"
+          VERSION="$(echo "$VERSION" | tr -d '[:space:]')"
+          if [ -z "$VERSION" ]; then
+            echo "::error::workflow_dispatch input 'version' is required (e.g. 2.0.9.20)"
+            exit 1
+          fi
+          if [[ ! "$VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "::error::Invalid version format: $VERSION"
+            echo "::error::Expected 4-part numeric version (e.g. 2.0.9.20)"
+            exit 1
+          fi
 
-      - name: Commit and push
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add desktop/BUILD_NUMBER
-          git commit -m "chore: bump build number to $(tr -d '\r\n' < desktop/BUILD_NUMBER)"
-          git push
+          MAS_VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
+          MAS_BUILD_NUMBER="${BASH_REMATCH[4]}"
+          WINDOWS_VERSION="$VERSION"
+
+          echo "full_version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "mas_version=$MAS_VERSION" >> "$GITHUB_OUTPUT"
+          echo "mas_build_number=$MAS_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "windows_version=$WINDOWS_VERSION" >> "$GITHUB_OUTPUT"
+
+          echo "Resolved full version: $VERSION"
+          echo "MAS version/build: $MAS_VERSION ($MAS_BUILD_NUMBER)"
+          echo "Windows version: $WINDOWS_VERSION"
 
   build-mas:
-    needs: bump-build-number
+    needs: resolve-version
     runs-on: macos-latest
     timeout-minutes: 120
     env:
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       SIGNING_IDENTITY_APPSTORE: ${{ secrets.SIGNING_IDENTITY_APPSTORE }}
       INSTALLER_IDENTITY: ${{ secrets.INSTALLER_IDENTITY }}
       SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
@@ -61,13 +72,24 @@ jobs:
         with:
           node-version: 20
 
+      - name: Validate app runtime secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${{ secrets.FIGMA_CLIENT_ID }}" ] || [ -z "${{ secrets.FIGMA_CLIENT_SECRET }}" ]; then
+            echo "::error::Missing FIGMA_CLIENT_ID or FIGMA_CLIENT_SECRET"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GOOGLE_ANALYTICS_ID }}" ] || [ -z "${{ secrets.GOOGLE_ANALYTICS_API_SECRET }}" ]; then
+            echo "::error::Missing GOOGLE_ANALYTICS_ID or GOOGLE_ANALYTICS_API_SECRET"
+            exit 1
+          fi
+          echo "Runtime secrets for OAuth/Analytics are configured"
+
       - name: Validate MAS secrets
         run: |
           set -euo pipefail
           required=(
-            APPLE_ID
-            APPLE_PASSWORD
-            APPLE_TEAM_ID
             SIGNING_IDENTITY_APPSTORE
             INSTALLER_IDENTITY
             SIGNING_CERTIFICATE_BASE64
@@ -124,6 +146,12 @@ jobs:
           rm -f /tmp/signing-cert.p12 /tmp/installer-cert.p12
 
       - name: Build MAS
+        env:
+          FIGMA_CLIENT_ID: ${{ secrets.FIGMA_CLIENT_ID }}
+          FIGMA_CLIENT_SECRET: ${{ secrets.FIGMA_CLIENT_SECRET }}
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+          GOOGLE_ANALYTICS_API_SECRET: ${{ secrets.GOOGLE_ANALYTICS_API_SECRET }}
+          DISTRIBUTION_CHANNEL: app_store
         run: |
           set -euo pipefail
           ROOT="$GITHUB_WORKSPACE"
@@ -236,13 +264,19 @@ jobs:
           cd "$TMP_DIR"
           npm ci
 
-          VERSION=$(node -p "require('./package.json').version")
-          BUILD_VERSION="${{ needs.bump-build-number.outputs.build_version }}"
+          FULL_VERSION="${{ needs.resolve-version.outputs.full_version }}"
+          VERSION="${{ needs.resolve-version.outputs.mas_version }}"
+          BUILD_VERSION="${{ needs.resolve-version.outputs.mas_build_number }}"
 
-          # Inject buildVersion (CFBundleVersion) into forge.config.ts
+          # Inject appVersion (CFBundleShortVersionString) and buildVersion (CFBundleVersion)
           node -e "
             const fs = require('fs');
             let c = fs.readFileSync('forge.config.ts', 'utf8');
+            if (/appVersion:\s*'[^']*'/.test(c)) {
+              c = c.replace(/appVersion:\s*'[^']*'/, \"appVersion: '${VERSION}'\");
+            } else {
+              c = c.replace(/packagerConfig:\s*{/, \"packagerConfig: {\\n    appVersion: '${VERSION}',\");
+            }
             if (/buildVersion:\s*'[^']*'/.test(c)) {
               c = c.replace(/buildVersion:\s*'[^']*'/, \"buildVersion: '${BUILD_VERSION}'\");
             } else {
@@ -287,13 +321,40 @@ jobs:
             exit 1
           fi
 
-          echo "$VERSION" > "$ROOT/artifacts/release_version.txt"
+          echo "$FULL_VERSION" > "$ROOT/artifacts/release_version.txt"
           echo "$BUILD_VERSION" > "$ROOT/artifacts/build_version.txt"
           if [ -d "$TMP_DIR/out" ]; then
             cp -R "$TMP_DIR/out"/* "$ROOT/artifacts/"
           fi
 
           rm -rf "$TMP_DIR"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mas-artifacts
+          path: artifacts/**
+
+      - name: Extract version
+        id: version
+        run: |
+          echo "version=$(cat artifacts/release_version.txt | tr -d '\n')" >> $GITHUB_OUTPUT
+
+  upload-mas:
+    needs: build-mas
+    if: ${{ needs.build-mas.result == 'success' }}
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - name: Download MAS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mas-artifacts
+          path: artifacts
 
       - name: Upload to App Store Connect
         run: |
@@ -328,19 +389,8 @@ jobs:
           echo "::error::Upload failed after $MAX_RETRIES attempts"
           exit 1
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: mas-artifacts
-          path: artifacts/**
-
-      - name: Extract version
-        id: version
-        run: |
-          echo "version=$(cat artifacts/release_version.txt | tr -d '\n')" >> $GITHUB_OUTPUT
-
   build-msix:
-    needs: bump-build-number
+    needs: resolve-version
     runs-on: windows-latest
     timeout-minutes: 30
     env:
@@ -356,6 +406,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Validate app runtime secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${{ secrets.FIGMA_CLIENT_ID }}" ] || [ -z "${{ secrets.FIGMA_CLIENT_SECRET }}" ]; then
+            echo "::error::Missing FIGMA_CLIENT_ID or FIGMA_CLIENT_SECRET"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GOOGLE_ANALYTICS_ID }}" ] || [ -z "${{ secrets.GOOGLE_ANALYTICS_API_SECRET }}" ]; then
+            echo "::error::Missing GOOGLE_ANALYTICS_ID or GOOGLE_ANALYTICS_API_SECRET"
+            exit 1
+          fi
+          echo "Runtime secrets for OAuth/Analytics are configured"
 
       - name: Validate MSIX secrets
         shell: bash
@@ -399,6 +463,12 @@ jobs:
 
       - name: Build MSIX
         shell: bash
+        env:
+          FIGMA_CLIENT_ID: ${{ secrets.FIGMA_CLIENT_ID }}
+          FIGMA_CLIENT_SECRET: ${{ secrets.FIGMA_CLIENT_SECRET }}
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+          GOOGLE_ANALYTICS_API_SECRET: ${{ secrets.GOOGLE_ANALYTICS_API_SECRET }}
+          DISTRIBUTION_CHANNEL: direct
         run: |
           set -euo pipefail
           ROOT="$GITHUB_WORKSPACE"
@@ -476,8 +546,20 @@ jobs:
           cd "$TMP_DIR"
           npm ci
 
-          VERSION=$(node -p "require('./package.json').version")
-          BUILD_VERSION="${VERSION}.${{ needs.bump-build-number.outputs.build_version }}"
+          VERSION="${{ needs.resolve-version.outputs.windows_version }}"
+          BUILD_VERSION="$VERSION"
+
+          # Inject appVersion for Windows/MSIX (e.g. 2.0.9.20)
+          node -e "
+            const fs = require('fs');
+            let c = fs.readFileSync('forge.config.ts', 'utf8');
+            if (/appVersion:\s*'[^']*'/.test(c)) {
+              c = c.replace(/appVersion:\s*'[^']*'/, \"appVersion: '${VERSION}'\");
+            } else {
+              c = c.replace(/packagerConfig:\s*{/, \"packagerConfig: {\\n    appVersion: '${VERSION}',\");
+            }
+            fs.writeFileSync('forge.config.ts', c);
+          "
 
           export PLATFORM=msstore
           export APP_VERSION="$BUILD_VERSION"
@@ -513,8 +595,9 @@ jobs:
       contents: write
     needs:
       - build-mas
+      - upload-mas
       - build-msix
-    if: ${{ needs.build-mas.result == 'success' && needs.build-msix.result == 'success' }}
+    if: ${{ needs.build-mas.result == 'success' && needs.upload-mas.result == 'success' && needs.build-msix.result == 'success' }}
     steps:
       - name: Download MAS artifacts
         uses: actions/download-artifact@v4
