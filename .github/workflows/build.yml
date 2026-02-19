@@ -571,53 +571,44 @@ jobs:
           VERSION="${{ needs.resolve-version.outputs.windows_version }}"
           BUILD_VERSION="$VERSION"
 
-          # Choose a Windows SDK version that exists on the runner and still
-          # satisfies Store validation (MinVersion must be > 10.0.17134.0).
-          KIT_BIN_BASE="/c/Program Files (x86)/Windows Kits/10/bin"
-          if [ ! -d "$KIT_BIN_BASE" ]; then
-            echo "::error::Windows Kits directory not found: $KIT_BIN_BASE"
-            exit 1
-          fi
-
-          mapfile -t kit_versions < <(ls -1 "$KIT_BIN_BASE" | rg '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)
-          if [ "${#kit_versions[@]}" -eq 0 ]; then
-            echo "::error::No Windows Kit versions found in $KIT_BIN_BASE"
-            exit 1
-          fi
-
-          version_ge() {
-            local a="$1"
-            local b="$2"
-            [ "$(printf '%s\n%s\n' "$a" "$b" | sort -V | head -n1)" = "$b" ]
-          }
-
-          MIN_ALLOWED_OS_VERSION="10.0.17763.0"
-          SELECTED_KIT_VERSION=""
-          for v in "${kit_versions[@]}"; do
-            if version_ge "$v" "$MIN_ALLOWED_OS_VERSION"; then
-              SELECTED_KIT_VERSION="$v"
-              break
-            fi
-          done
-
-          if [ -z "$SELECTED_KIT_VERSION" ]; then
-            SELECTED_KIT_VERSION="${kit_versions[$((${#kit_versions[@]} - 1))]}"
-            echo "::warning::No SDK >= ${MIN_ALLOWED_OS_VERSION} found; using highest installed SDK ${SELECTED_KIT_VERSION}"
-          fi
-
-          HIGHEST_KIT_VERSION="${kit_versions[$((${#kit_versions[@]} - 1))]}"
-          echo "Detected Windows Kit versions: ${kit_versions[*]}"
-          echo "Using packageMinOSVersion: ${SELECTED_KIT_VERSION}"
-          echo "Using packageMaxOSVersionTested: ${HIGHEST_KIT_VERSION}"
-          export MSIX_MIN_OS_VERSION="$SELECTED_KIT_VERSION"
-          export MSIX_MAX_OS_VERSION_TESTED="$HIGHEST_KIT_VERSION"
-
           # Inject appVersion for Windows/MSIX (e.g. 2.0.9.20)
           node -e "
             const fs = require('fs');
+            const path = require('path');
             let c = fs.readFileSync('forge.config.ts', 'utf8');
-            const minOsVersion = process.env.MSIX_MIN_OS_VERSION || '10.0.17763.0';
-            const maxTestedVersion = process.env.MSIX_MAX_OS_VERSION_TESTED || minOsVersion;
+            const minAllowedVersion = '10.0.17763.0';
+            const compareVersion = (a, b) => {
+              const pa = a.split('.').map(Number);
+              const pb = b.split('.').map(Number);
+              for (let i = 0; i < Math.max(pa.length, pb.length); i += 1) {
+                const da = pa[i] || 0;
+                const db = pb[i] || 0;
+                if (da > db) return 1;
+                if (da < db) return -1;
+              }
+              return 0;
+            };
+            const getWindowsKitVersions = () => {
+              const programFilesX86 = process.env['ProgramFiles(x86)'] || 'C:/Program Files (x86)';
+              const kitBinDir = path.join(programFilesX86, 'Windows Kits', '10', 'bin');
+              if (!fs.existsSync(kitBinDir)) {
+                throw new Error('Windows Kits directory not found: ' + kitBinDir);
+              }
+              return fs
+                .readdirSync(kitBinDir, { withFileTypes: true })
+                .filter((entry) => entry.isDirectory() && /^\\d+\\.\\d+\\.\\d+\\.\\d+$/.test(entry.name))
+                .map((entry) => entry.name)
+                .sort(compareVersion);
+            };
+            const kitVersions = getWindowsKitVersions();
+            if (kitVersions.length === 0) {
+              throw new Error('No Windows Kit versions found under Windows Kits/10/bin');
+            }
+            const maxTestedVersion = kitVersions[kitVersions.length - 1];
+            const minOsVersion = kitVersions.find((v) => compareVersion(v, minAllowedVersion) >= 0) || maxTestedVersion;
+            console.log('Detected Windows Kit versions:', kitVersions.join(', '));
+            console.log('Using packageMinOSVersion:', minOsVersion);
+            console.log('Using packageMaxOSVersionTested:', maxTestedVersion);
             if (/appVersion:\s*'[^']*'/.test(c)) {
               c = c.replace(/appVersion:\s*'[^']*'/, \"appVersion: '${VERSION}'\");
             } else {
