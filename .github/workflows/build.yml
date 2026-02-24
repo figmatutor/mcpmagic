@@ -565,6 +565,9 @@ jobs:
           cp "$ROOT/desktop/branding/tray_dark.png" "$TMP_DIR/public/tray_dark.png"
           cp "$ROOT/desktop/branding/tray_dark_active.png" "$TMP_DIR/public/tray_dark_active.png"
 
+          mkdir -p "$TMP_DIR/public/assets/windows"
+          cp -R "$ROOT/desktop/branding/windows/"* "$TMP_DIR/public/assets/windows/"
+
           cd "$TMP_DIR"
           npm ci
 
@@ -636,6 +639,12 @@ jobs:
 
             setManifestVariable('packageMinOSVersion', minOsVersion);
             setManifestVariable('packageMaxOSVersionTested', maxTestedVersion);
+            if (!c.includes('packageAssets')) {
+              c = c.replace(
+                /new MakerMSIX\(\{/,
+                \"new MakerMSIX({\\n      packageAssets: './public/assets/windows',\"
+              );
+            }
             fs.writeFileSync('forge.config.ts', c);
           "
 
