@@ -31,7 +31,7 @@
   <Applications>
     <Application
       Id="App"
-      Executable="__APP_EXECUTABLE__"
+      Executable="app\__APP_EXECUTABLE__"
       EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
         DisplayName="__APP_DISPLAY_NAME__"
