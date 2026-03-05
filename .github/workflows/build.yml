@@ -617,6 +617,12 @@ jobs:
             console.log('Detected Windows Kit versions:', kitVersions.join(', '));
             console.log('Using packageMinOSVersion:', minOsVersion);
             console.log('Using packageMaxOSVersionTested:', maxTestedVersion);
+            if (/const\s+windowsExecutableName\s*=\s*['\"][^'\"]+['\"];/.test(c)) {
+              c = c.replace(
+                /const\s+windowsExecutableName\s*=\s*['\"][^'\"]+['\"];/,
+                \"const windowsExecutableName = '\" + internalName + \"';\"
+              );
+            }
             if (/executableName:\s*['\"][^'\"]*['\"]/.test(c)) {
               c = c.replace(/executableName:\s*['\"][^'\"]*['\"]/, \"executableName: '\" + internalName + \"'\");
             }
@@ -680,6 +686,7 @@ jobs:
             setManifestVariable('packageDisplayName', productName);
             setManifestVariable('applicationDisplayName', productName);
             setManifestVariable('packageDescription', packageDescription);
+            setManifestVariable('appExecutable', appExecutable);
             if (!c.includes('appManifest')) {
               c = c.replace(
                 /new MakerMSIX\(\{/,
