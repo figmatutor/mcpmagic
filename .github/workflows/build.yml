@@ -579,7 +579,8 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             let c = fs.readFileSync('forge.config.ts', 'utf8');
-            const meta = require('./desktop/branding/metadata.json');
+            const metadataPath = path.join(process.env.GITHUB_WORKSPACE, 'desktop', 'branding', 'metadata.json');
+            const meta = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
             const minAllowedVersion = '10.0.17763.0';
             const productName = meta.productName || meta.appName || 'MCP Magic';
             const packageDescription = meta.description || productName;
