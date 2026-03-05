@@ -579,7 +579,10 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             let c = fs.readFileSync('forge.config.ts', 'utf8');
+            const meta = require('./desktop/branding/metadata.json');
             const minAllowedVersion = '10.0.17763.0';
+            const productName = meta.productName || meta.appName || 'MCP Magic';
+            const packageDescription = meta.description || productName;
             const compareVersion = (a, b) => {
               const pa = a.split('.').map(Number);
               const pb = b.split('.').map(Number);
@@ -612,6 +615,36 @@ jobs:
             console.log('Detected Windows Kit versions:', kitVersions.join(', '));
             console.log('Using packageMinOSVersion:', minOsVersion);
             console.log('Using packageMaxOSVersionTested:', maxTestedVersion);
+            const appExecutableMatch = c.match(/executableName:\\s*['\\\"]([^'\\\"]+)['\\\"]/);
+            const appExecutable = (appExecutableMatch && appExecutableMatch[1] ? appExecutableMatch[1] : 'talktofigma-desktop') + '.exe';
+            const manifestTemplatePath = path.join('public', 'assets', 'windows', 'AppxManifest.xml.template');
+            const manifestOutputPath = path.join('public', 'assets', 'windows', 'AppxManifest.xml');
+            if (!fs.existsSync(manifestTemplatePath)) {
+              throw new Error('MSIX manifest template not found: ' + manifestTemplatePath);
+            }
+            const requiredEnv = [
+              'MSIX_IDENTITY_NAME',
+              'MSIX_PUBLISHER',
+              'MSIX_PUBLISHER_DISPLAY_NAME',
+            ];
+            for (const key of requiredEnv) {
+              if (!process.env[key]) {
+                throw new Error('Missing required environment variable for MSIX manifest: ' + key);
+              }
+            }
+            const renderedManifest = fs
+              .readFileSync(manifestTemplatePath, 'utf8')
+              .replaceAll('__PACKAGE_IDENTITY__', process.env.MSIX_IDENTITY_NAME)
+              .replaceAll('__PUBLISHER__', process.env.MSIX_PUBLISHER)
+              .replaceAll('__PACKAGE_VERSION__', '${VERSION}')
+              .replaceAll('__PACKAGE_DISPLAY_NAME__', productName)
+              .replaceAll('__PUBLISHER_DISPLAY_NAME__', process.env.MSIX_PUBLISHER_DISPLAY_NAME)
+              .replaceAll('__PACKAGE_DESCRIPTION__', packageDescription)
+              .replaceAll('__PACKAGE_MIN_OS_VERSION__', minOsVersion)
+              .replaceAll('__PACKAGE_MAX_OS_VERSION_TESTED__', maxTestedVersion)
+              .replaceAll('__APP_EXECUTABLE__', appExecutable)
+              .replaceAll('__APP_DISPLAY_NAME__', productName);
+            fs.writeFileSync(manifestOutputPath, renderedManifest);
             if (/appVersion:\s*'[^']*'/.test(c)) {
               c = c.replace(/appVersion:\s*'[^']*'/, \"appVersion: '${VERSION}'\");
             } else {
@@ -639,6 +672,16 @@ jobs:
 
             setManifestVariable('packageMinOSVersion', minOsVersion);
             setManifestVariable('packageMaxOSVersionTested', maxTestedVersion);
+            // Ensure installed app title in Windows matches Store listing.
+            setManifestVariable('packageDisplayName', productName);
+            setManifestVariable('applicationDisplayName', productName);
+            setManifestVariable('packageDescription', packageDescription);
+            if (!c.includes('appManifest')) {
+              c = c.replace(
+                /new MakerMSIX\(\{/,
+                \"new MakerMSIX({\\n      appManifest: './public/assets/windows/AppxManifest.xml',\"
+              );
+            }
             if (!c.includes('packageAssets')) {
               c = c.replace(
                 /new MakerMSIX\(\{/,
