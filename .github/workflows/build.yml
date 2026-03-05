@@ -177,13 +177,13 @@ jobs:
         run: |
           set -euo pipefail
           ROOT="$GITHUB_WORKSPACE"
-          TMP_DIR="${TMPDIR:-/tmp}/mcpmagic-talktofigma-desktop"
+          TMP_DIR="${TMPDIR:-/tmp}/mcpmagic-desktop"
           export TMP_DIR
 
           rm -rf "$TMP_DIR"
           git clone --depth=1 https://github.com/grab/TalkToFigmaDesktop "$TMP_DIR"
 
-          node -e "const fs=require('fs');const path=require('path');const meta=require('./desktop/branding/metadata.json');const pkgPath=path.join(process.env.TMP_DIR,'package.json');const p=JSON.parse(fs.readFileSync(pkgPath,'utf8'));p.name=meta.appName.toLowerCase().replace(/[^a-z0-9.-]/g,'-');p.productName=meta.productName;p.description=meta.description;fs.writeFileSync(pkgPath,JSON.stringify(p,null,2));"
+          node -e "const fs=require('fs');const path=require('path');const meta=require('./desktop/branding/metadata.json');const pkgPath=path.join(process.env.TMP_DIR,'package.json');const p=JSON.parse(fs.readFileSync(pkgPath,'utf8'));const internalName=(meta.internalName||meta.appName).toLowerCase().replace(/[^a-z0-9.-]/g,'-');p.name=internalName;p.productName=meta.productName;p.description=meta.description;fs.writeFileSync(pkgPath,JSON.stringify(p,null,2));"
 
           node -e "
             const fs = require('fs');
@@ -203,7 +203,7 @@ jobs:
             const nameAfter = c.match(/name:\s*['\"]([^'\"]*)['\"]/) || [];
 
             // Replace executableName
-            const execName = meta.productName.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
+            const execName = (meta.internalName || meta.productName).toLowerCase().replace(/[^a-z0-9.-]/g, '-');
             const execBefore = c.match(/executableName:\s*['\"]([^'\"]*)['\"]/) || [];
             c = c.replace(/executableName:\s*['\"'][^'\"]*['\"']/, \`executableName: '\${execName}'\`);
             const execAfter = c.match(/executableName:\s*['\"]([^'\"]*)['\"]/) || [];
@@ -494,7 +494,7 @@ jobs:
         run: |
           set -euo pipefail
           ROOT="$GITHUB_WORKSPACE"
-          RAW_TMP_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/mcpmagic-talktofigma-desktop"
+          RAW_TMP_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/mcpmagic-desktop"
           if command -v cygpath >/dev/null 2>&1; then
             TMP_DIR="$(cygpath -u "$RAW_TMP_DIR" 2>/dev/null || echo "$RAW_TMP_DIR")"
           else
@@ -584,6 +584,7 @@ jobs:
             const minAllowedVersion = '10.0.17763.0';
             const productName = meta.productName || meta.appName || 'MCP Magic';
             const packageDescription = meta.description || productName;
+            const internalName = (meta.internalName || meta.appName || productName).toLowerCase().replace(/[^a-z0-9.-]/g, '-');
             const compareVersion = (a, b) => {
               const pa = a.split('.').map(Number);
               const pb = b.split('.').map(Number);
@@ -616,8 +617,10 @@ jobs:
             console.log('Detected Windows Kit versions:', kitVersions.join(', '));
             console.log('Using packageMinOSVersion:', minOsVersion);
             console.log('Using packageMaxOSVersionTested:', maxTestedVersion);
-            const appExecutableMatch = c.match(/executableName:\\s*['\\\"]([^'\\\"]+)['\\\"]/);
-            const appExecutable = (appExecutableMatch && appExecutableMatch[1] ? appExecutableMatch[1] : 'talktofigma-desktop') + '.exe';
+            if (/executableName:\s*['\"][^'\"]*['\"]/.test(c)) {
+              c = c.replace(/executableName:\s*['\"][^'\"]*['\"]/, \"executableName: '\" + internalName + \"'\");
+            }
+            const appExecutable = internalName + '.exe';
             const manifestTemplatePath = path.join('public', 'assets', 'windows', 'AppxManifest.xml.template');
             const manifestOutputPath = path.join('public', 'assets', 'windows', 'AppxManifest.xml');
             if (!fs.existsSync(manifestTemplatePath)) {

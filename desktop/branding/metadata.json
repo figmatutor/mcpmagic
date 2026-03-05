@@ -1,5 +1,6 @@
 {
   "appName": "MCP Magic",
+  "internalName": "mcp-magic",
   "productName": "MCP Magic",
   "bundleId": "kr.co.metadata.mcp",
   "description": "A powerful desktop application bridging Figma and AI tools via Model Context Protocol. Seamless integration between Figma designs and AI assistants.",
