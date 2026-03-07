@@ -705,7 +705,7 @@ jobs:
             if (!c.includes('windowsKitVersion')) {
               c = c.replace(
                 /new MakerMSIX\(\{/,
-                \`new MakerMSIX({\\n      windowsKitVersion: '${maxTestedVersion}',\`
+                "new MakerMSIX({\\n      windowsKitVersion: '" + maxTestedVersion + "',"
               );
             }
             fs.writeFileSync('forge.config.ts', c);
