@@ -14,7 +14,7 @@
     <DisplayName>__PACKAGE_DISPLAY_NAME__</DisplayName>
     <PublisherDisplayName>__PUBLISHER_DISPLAY_NAME__</PublisherDisplayName>
     <Description>__PACKAGE_DESCRIPTION__</Description>
-    <Logo>Square44x44Logo.png</Logo>
+    <Logo>assets\Square44x44Logo.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -37,10 +37,10 @@
         DisplayName="__APP_DISPLAY_NAME__"
         Description="__PACKAGE_DESCRIPTION__"
         BackgroundColor="transparent"
-        Square150x150Logo="Square150x150Logo.png"
-        Square44x44Logo="Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Wide310x150Logo.png" />
-        <uap:SplashScreen Image="SplashScreen.scale-200.png" />
+        Square150x150Logo="assets\Square150x150Logo.png"
+        Square44x44Logo="assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="assets\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="assets\SplashScreen.scale-200.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
