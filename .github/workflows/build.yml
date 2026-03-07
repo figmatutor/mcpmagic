@@ -699,6 +699,15 @@ jobs:
                 \"new MakerMSIX({\\n      packageAssets: './public/assets/windows',\"
               );
             }
+            // Explicitly set windowsKitVersion to the Runner's actual installed Kit.
+            // electron-windows-msix otherwise derives the Kit path from Manifest MinVersion,
+            // which may not be installed on the Runner (e.g. 19041 vs 26100).
+            if (!c.includes('windowsKitVersion')) {
+              c = c.replace(
+                /new MakerMSIX\(\{/,
+                \`new MakerMSIX({\\n      windowsKitVersion: '${maxTestedVersion}',\`
+              );
+            }
             fs.writeFileSync('forge.config.ts', c);
           "
 
