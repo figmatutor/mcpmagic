@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version to build (e.g. 2.0.9.20)
+        description: Version to build (e.g. 2.0.9.20; Windows MSIX uses x.y.z.0)
         required: true
         type: string
       upload_mas:
@@ -46,7 +46,7 @@ jobs:
 
           MAS_VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
           MAS_BUILD_NUMBER="${BASH_REMATCH[4]}"
-          WINDOWS_VERSION="$VERSION"
+          WINDOWS_VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}.0"
 
           echo "full_version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "mas_version=$MAS_VERSION" >> "$GITHUB_OUTPUT"
@@ -55,7 +55,15 @@ jobs:
 
           echo "Resolved full version: $VERSION"
           echo "MAS version/build: $MAS_VERSION ($MAS_BUILD_NUMBER)"
-          echo "Windows version: $WINDOWS_VERSION"
+          echo "Windows version: $WINDOWS_VERSION (revision is forced to 0 for Store validation)"
+
+          {
+            echo "## Build version checklist"
+            echo "- [x] Input version accepted: \`$VERSION\`"
+            echo "- [x] MAS version/build mapped: \`$MAS_VERSION\` / \`$MAS_BUILD_NUMBER\`"
+            echo "- [x] Windows MSIX version mapped: \`$WINDOWS_VERSION\`"
+            echo "- [x] Windows MSIX revision forced to \`0\` (Store validation requirement)"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   build-mas:
     needs: resolve-version
