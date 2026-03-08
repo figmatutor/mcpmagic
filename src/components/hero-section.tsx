@@ -72,7 +72,7 @@ export default function HeroSection() {
                   {t('download_mac')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => window.open("https://apps.microsoft.com/detail/xpfg2vd5zd6ph9?hl=ko-KR&gl=KR", "_blank", "noopener,noreferrer")}
+                  onClick={() => window.open("https://apps.microsoft.com/detail/9PKKSSRNJ3ZM", "_blank", "noopener,noreferrer")}
                   className="cursor-pointer"
                 >
                   <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
