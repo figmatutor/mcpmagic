@@ -81,17 +81,13 @@ export async function generateStaticParams() {
 
 async function getPrompt(slug: string): Promise<Prompt | null> {
   try {
-    console.log("Loading prompt:", slug);
     const prompt = await reader.collections.prompts.read(slug);
-    console.log("Prompt data:", prompt);
 
     if (!prompt) {
-      console.log("No prompt found for slug:", slug);
       return null;
     }
 
     const content = await prompt.content();
-    console.log("Content loaded successfully");
 
     return {
       slug,
