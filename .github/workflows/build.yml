@@ -57,6 +57,14 @@ jobs:
           echo "MAS version/build: $MAS_VERSION ($MAS_BUILD_NUMBER)"
           echo "Windows version: $WINDOWS_VERSION (revision is forced to 0 for Store validation)"
 
+          {
+            echo "## Build version checklist"
+            echo "- [x] Input version accepted: \`$VERSION\`"
+            echo "- [x] MAS version/build mapped: \`$MAS_VERSION\` / \`$MAS_BUILD_NUMBER\`"
+            echo "- [x] Windows MSIX version mapped: \`$WINDOWS_VERSION\`"
+            echo "- [x] Windows MSIX revision forced to \`0\` (Store validation requirement)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   build-mas:
     needs: resolve-version
     runs-on: macos-latest
