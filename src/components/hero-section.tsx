@@ -9,7 +9,7 @@ export default function HeroSection() {
   return (
     <section className="min-h-[700px] flex items-center justify-center pt-20 pb-16">
       <div className="container mx-auto px-4">
-        <motion.div 
+        <motion.div
           className="max-w-5xl mx-auto text-center space-y-8"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -18,8 +18,8 @@ export default function HeroSection() {
         >
           {/* Muzli Style Badge */}
           <div className="inline-block">
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className="bg-transparent text-slate-700 dark:text-white/80 border-0 text-sm font-medium px-6 py-2"
             >
               {t('badge')}
@@ -57,7 +57,7 @@ export default function HeroSection() {
               />
             </a>
             <a
-              href="https://apps.microsoft.com/detail/9PKKSSRNJ3ZM"
+              href="https://apps.microsoft.com/detail/9pkkssrnj3zm?hl=ko-KR&gl=KR"
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('download_windows')}
