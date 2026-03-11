@@ -30,6 +30,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 Next.js 15 • Tailwind CSS • shadcn/ui • Keystatic CMS
 
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

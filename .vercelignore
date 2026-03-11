@@ -1,0 +1,15 @@
+# Prevent non-web assets from being uploaded in Vercel CLI deploys
+desktop/
+artifacts/
+.github/
+
+# Local/build outputs and caches
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.log
+
+# VCS metadata
+.git/
