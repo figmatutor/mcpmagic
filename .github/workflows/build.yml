@@ -191,7 +191,7 @@ jobs:
           rm -rf "$TMP_DIR"
           git clone --depth=1 https://github.com/grab/TalkToFigmaDesktop "$TMP_DIR"
 
-          node -e "const fs=require('fs');const path=require('path');const meta=require('./desktop/branding/metadata.json');const pkgPath=path.join(process.env.TMP_DIR,'package.json');const p=JSON.parse(fs.readFileSync(pkgPath,'utf8'));const internalName=(meta.internalName||meta.appName).toLowerCase().replace(/[^a-z0-9.-]/g,'-');p.name=internalName;p.productName=meta.productName;p.description=meta.description;fs.writeFileSync(pkgPath,JSON.stringify(p,null,2));"
+          node -e "const fs=require('fs');const path=require('path');const meta=require('./desktop/branding/metadata.json');const pkgPath=path.join(process.env.TMP_DIR,'package.json');const p=JSON.parse(fs.readFileSync(pkgPath,'utf8'));const internalName=(meta.internalName||meta.appName).toLowerCase().replace(/[^a-z0-9.-]/g,'-');const productName=meta.productName||meta.appName||'MCP Magic';const mcpServerName=(meta.mcpServerName||productName).replace(/[^A-Za-z0-9]/g,'')||'MCPMagic';const mcpServerDirName=meta.mcpServerDirName||productName;p.name=internalName;p.productName=productName;p.description=meta.description;p.branding={...(p.branding||{}),shortName:meta.shortName||p.branding?.shortName||productName,mcpServerName,mcpServerDirName,deepLinkScheme:meta.deepLinkScheme||p.branding?.deepLinkScheme||internalName.replace(/[^a-z0-9]/g,'')};fs.writeFileSync(pkgPath,JSON.stringify(p,null,2));"
 
           node -e "
             const fs = require('fs');
@@ -515,6 +515,31 @@ jobs:
 
           # Keep upstream package.json/forge packagerConfig for MSIX to avoid
           # manifest executable-name mismatch during makeappx validation.
+
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const meta = require('./desktop/branding/metadata.json');
+            const pkgPath = path.join(process.env.TMP_DIR, 'package.json');
+            const p = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+            const internalName = (meta.internalName || meta.appName || meta.productName || 'MCP Magic')
+              .toLowerCase()
+              .replace(/[^a-z0-9.-]/g, '-');
+            const productName = meta.productName || meta.appName || 'MCP Magic';
+            const mcpServerName = (meta.mcpServerName || productName).replace(/[^A-Za-z0-9]/g, '') || 'MCPMagic';
+            const mcpServerDirName = meta.mcpServerDirName || productName;
+
+            p.description = meta.description || p.description;
+            p.branding = {
+              ...(p.branding || {}),
+              shortName: meta.shortName || p.branding?.shortName || productName,
+              mcpServerName,
+              mcpServerDirName,
+              deepLinkScheme: meta.deepLinkScheme || p.branding?.deepLinkScheme || internalName.replace(/[^a-z0-9]/g, ''),
+            };
+
+            fs.writeFileSync(pkgPath, JSON.stringify(p, null, 2));
+          "
 
           node -e "
             const fs = require('fs');

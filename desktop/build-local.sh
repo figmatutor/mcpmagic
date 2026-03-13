@@ -69,12 +69,25 @@ cmd_setup() {
     const meta = JSON.parse(fs.readFileSync('$METADATA', 'utf8'));
     const pkgPath = '$BUILD_DIR/package.json';
     const p = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    p.name = meta.appName.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
-    p.productName = meta.productName;
+    const productName = meta.productName || meta.appName || 'MCP Magic';
+    const internalName = (meta.internalName || meta.appName || productName).toLowerCase().replace(/[^a-z0-9.-]/g, '-');
+    const mcpServerName = (meta.mcpServerName || productName).replace(/[^A-Za-z0-9]/g, '') || 'MCPMagic';
+    const mcpServerDirName = meta.mcpServerDirName || productName;
+    p.name = internalName;
+    p.productName = productName;
     p.description = meta.description;
+    p.branding = {
+      ...(p.branding || {}),
+      shortName: meta.shortName || p.branding?.shortName || productName,
+      mcpServerName,
+      mcpServerDirName,
+      deepLinkScheme: meta.deepLinkScheme || p.branding?.deepLinkScheme || internalName.replace(/[^a-z0-9]/g, ''),
+    };
     fs.writeFileSync(pkgPath, JSON.stringify(p, null, 2));
     console.log('  name:', p.name);
     console.log('  productName:', p.productName);
+    console.log('  mcpServerName:', p.branding.mcpServerName);
+    console.log('  mcpServerDirName:', p.branding.mcpServerDirName);
   "
 
   # Step 3: Apply branding to forge.config.ts

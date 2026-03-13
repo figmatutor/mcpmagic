@@ -15,5 +15,7 @@
     "packageName": ""
   },
   "terminalProductName": "MCP MAGIC",
-  "deepLinkScheme": "mcpmagic"
+  "deepLinkScheme": "mcpmagic",
+  "mcpServerName": "MCPMagic",
+  "mcpServerDirName": "MCP Magic"
 }
