@@ -190,106 +190,10 @@ jobs:
 
           rm -rf "$TMP_DIR"
           git clone --depth=1 https://github.com/grab/TalkToFigmaDesktop "$TMP_DIR"
-
-          node -e "const fs=require('fs');const path=require('path');const meta=require('./desktop/branding/metadata.json');const pkgPath=path.join(process.env.TMP_DIR,'package.json');const p=JSON.parse(fs.readFileSync(pkgPath,'utf8'));const internalName=(meta.internalName||meta.appName).toLowerCase().replace(/[^a-z0-9.-]/g,'-');const productName=meta.productName||meta.appName||'MCP Magic';const mcpServerName=(meta.mcpServerName||productName).replace(/[^A-Za-z0-9]/g,'')||'MCPMagic';const mcpServerDirName=meta.mcpServerDirName||productName;p.name=internalName;p.productName=productName;p.description=meta.description;p.branding={...(p.branding||{}),shortName:meta.shortName||p.branding?.shortName||productName,mcpServerName,mcpServerDirName,deepLinkScheme:meta.deepLinkScheme||p.branding?.deepLinkScheme||internalName.replace(/[^a-z0-9]/g,'')};fs.writeFileSync(pkgPath,JSON.stringify(p,null,2));"
-
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const meta = require('./desktop/branding/metadata.json');
-            const forgePath = path.join(process.env.TMP_DIR, 'forge.config.ts');
-            let c = fs.readFileSync(forgePath, 'utf8');
-
-            // Replace appBundleId (supports both single and double quotes)
-            const bundleIdBefore = c.match(/appBundleId:\s*['\"]([^'\"]*)['\"]/) || [];
-            c = c.replace(/appBundleId:\s*['\"'][^'\"]*['\"']/, \`appBundleId: '\${meta.bundleId}'\`);
-            const bundleIdAfter = c.match(/appBundleId:\s*['\"]([^'\"]*)['\"]/) || [];
-
-            // Replace name
-            const nameBefore = c.match(/name:\s*['\"]([^'\"]*)['\"]/) || [];
-            c = c.replace(/name:\s*['\"'][^'\"]*['\"']/, \`name: '\${meta.productName}'\`);
-            const nameAfter = c.match(/name:\s*['\"]([^'\"]*)['\"]/) || [];
-
-            // Replace executableName
-            const execName = (meta.internalName || meta.productName).toLowerCase().replace(/[^a-z0-9.-]/g, '-');
-            const execBefore = c.match(/executableName:\s*['\"]([^'\"]*)['\"]/) || [];
-            c = c.replace(/executableName:\s*['\"'][^'\"]*['\"']/, \`executableName: '\${execName}'\`);
-            const execAfter = c.match(/executableName:\s*['\"]([^'\"]*)['\"]/) || [];
-
-            fs.writeFileSync(forgePath, c);
-
-            // Verify replacements
-            console.log('Bundle ID: ' + bundleIdBefore[1] + ' → ' + bundleIdAfter[1]);
-            console.log('Name: ' + nameBefore[1] + ' → ' + nameAfter[1]);
-            console.log('Executable: ' + execBefore[1] + ' → ' + execAfter[1]);
-
-            if (bundleIdAfter[1] !== meta.bundleId) {
-              console.error('ERROR: Bundle ID replacement failed!');
-              console.error('Expected: ' + meta.bundleId);
-              console.error('Got: ' + bundleIdAfter[1]);
-              process.exit(1);
-            }
-          "
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const meta = require('./desktop/branding/metadata.json');
-            const projectRoot = process.env.TMP_DIR;
-
-            const productName = meta.productName || meta.appName || 'MCP Magic';
-            const terminalProductName = meta.terminalProductName || productName.toUpperCase();
-            const deepLinkScheme = (meta.deepLinkScheme || meta.appName || productName)
-              .toLowerCase()
-              .replace(/[^a-z0-9]/g, '');
-
-            const replaceInFile = (relPath, replacements) => {
-              const filePath = path.join(projectRoot, relPath);
-              if (!fs.existsSync(filePath)) return;
-              let content = fs.readFileSync(filePath, 'utf8');
-              let changed = false;
-              for (const [from, to] of replacements) {
-                if (content.includes(from)) {
-                  content = content.split(from).join(to);
-                  changed = true;
-                }
-              }
-              if (changed) fs.writeFileSync(filePath, content);
-            };
-
-            replaceInFile('index.html', [
-              ['<title>Talk To Figma</title>', '<title>' + productName + '</title>'],
-            ]);
-
-            replaceInFile('src/App.tsx', [
-              ['TalkToFigma Desktop v2.0.0', terminalProductName + ' Desktop v2.0.0'],
-              ['talktofigma://', deepLinkScheme + '://'],
-            ]);
-
-            replaceInFile('src/components/app-sidebar.tsx', [
-              ['alt=\"TalkToFigma\"', 'alt=\"' + productName + '\"'],
-              ['>TalkToFigma</span>', '>' + productName + '</span>'],
-            ]);
-
-            replaceInFile('src/pages/Settings.tsx', [
-              ['Configure TalkToFigma Desktop with your preferred MCP client', 'Configure ' + productName + ' with your preferred MCP client'],
-            ]);
-
-            replaceInFile('src/pages/Help.tsx', [
-              ['Learn how to use TalkToFigma Desktop with our interactive tutorial', 'Learn how to use ' + productName + ' with our interactive tutorial'],
-              ['Follow our step-by-step tutorial to get started with TalkToFigma Desktop.', 'Follow our step-by-step tutorial to get started with ' + productName + '.'],
-            ]);
-          "
-          mkdir -p "$TMP_DIR/public"
-          cp "$ROOT/desktop/branding/icon.icns" "$TMP_DIR/public/icon.icns"
-          cp "$ROOT/desktop/branding/icon.ico" "$TMP_DIR/public/icon.ico"
-          cp "$ROOT/desktop/branding/icon.png" "$TMP_DIR/public/icon.png"
-          cp "$ROOT/desktop/branding/trayTemplate.png" "$TMP_DIR/public/trayTemplate.png"
-          cp "$ROOT/desktop/branding/trayTemplate_active.png" "$TMP_DIR/public/trayTemplate_active.png"
-          cp "$ROOT/desktop/branding/tray_dark.png" "$TMP_DIR/public/tray_dark.png"
-          cp "$ROOT/desktop/branding/tray_dark_active.png" "$TMP_DIR/public/tray_dark_active.png"
-          if [ -d "$ROOT/desktop/branding/icon.iconset" ]; then
-            cp -R "$ROOT/desktop/branding/icon.iconset" "$TMP_DIR/public/"
-          fi
+          node "$ROOT/desktop/apply-branding.cjs" \
+            --repo-root "$ROOT" \
+            --project-root "$TMP_DIR" \
+            --target mas
 
           cd "$TMP_DIR"
           npm ci
@@ -515,91 +419,10 @@ jobs:
 
           # Keep upstream package.json/forge packagerConfig for MSIX to avoid
           # manifest executable-name mismatch during makeappx validation.
-
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const meta = require('./desktop/branding/metadata.json');
-            const pkgPath = path.join(process.env.TMP_DIR, 'package.json');
-            const p = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-            const internalName = (meta.internalName || meta.appName || meta.productName || 'MCP Magic')
-              .toLowerCase()
-              .replace(/[^a-z0-9.-]/g, '-');
-            const productName = meta.productName || meta.appName || 'MCP Magic';
-            const mcpServerName = (meta.mcpServerName || productName).replace(/[^A-Za-z0-9]/g, '') || 'MCPMagic';
-            const mcpServerDirName = meta.mcpServerDirName || productName;
-
-            p.description = meta.description || p.description;
-            p.branding = {
-              ...(p.branding || {}),
-              shortName: meta.shortName || p.branding?.shortName || productName,
-              mcpServerName,
-              mcpServerDirName,
-              deepLinkScheme: meta.deepLinkScheme || p.branding?.deepLinkScheme || internalName.replace(/[^a-z0-9]/g, ''),
-            };
-
-            fs.writeFileSync(pkgPath, JSON.stringify(p, null, 2));
-          "
-
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const meta = require('./desktop/branding/metadata.json');
-            const projectRoot = process.env.TMP_DIR;
-
-            const productName = meta.productName || meta.appName || 'MCP Magic';
-            const terminalProductName = meta.terminalProductName || productName.toUpperCase();
-            const deepLinkScheme = (meta.deepLinkScheme || meta.appName || productName)
-              .toLowerCase()
-              .replace(/[^a-z0-9]/g, '');
-
-            const replaceInFile = (relPath, replacements) => {
-              const filePath = path.join(projectRoot, relPath);
-              if (!fs.existsSync(filePath)) return;
-              let content = fs.readFileSync(filePath, 'utf8');
-              let changed = false;
-              for (const [from, to] of replacements) {
-                if (content.includes(from)) {
-                  content = content.split(from).join(to);
-                  changed = true;
-                }
-              }
-              if (changed) fs.writeFileSync(filePath, content);
-            };
-
-            replaceInFile('index.html', [
-              ['<title>Talk To Figma</title>', '<title>' + productName + '</title>'],
-            ]);
-
-            replaceInFile('src/App.tsx', [
-              ['TalkToFigma Desktop v2.0.0', terminalProductName + ' Desktop v2.0.0'],
-              ['talktofigma://', deepLinkScheme + '://'],
-            ]);
-
-            replaceInFile('src/components/app-sidebar.tsx', [
-              ['alt=\"TalkToFigma\"', 'alt=\"' + productName + '\"'],
-              ['>TalkToFigma</span>', '>' + productName + '</span>'],
-            ]);
-
-            replaceInFile('src/pages/Settings.tsx', [
-              ['Configure TalkToFigma Desktop with your preferred MCP client', 'Configure ' + productName + ' with your preferred MCP client'],
-            ]);
-
-            replaceInFile('src/pages/Help.tsx', [
-              ['Learn how to use TalkToFigma Desktop with our interactive tutorial', 'Learn how to use ' + productName + ' with our interactive tutorial'],
-              ['Follow our step-by-step tutorial to get started with TalkToFigma Desktop.', 'Follow our step-by-step tutorial to get started with ' + productName + '.'],
-            ]);
-          "
-          mkdir -p "$TMP_DIR/public"
-          cp "$ROOT/desktop/branding/icon.ico" "$TMP_DIR/public/icon.ico"
-          cp "$ROOT/desktop/branding/icon.png" "$TMP_DIR/public/icon.png"
-          cp "$ROOT/desktop/branding/trayTemplate.png" "$TMP_DIR/public/trayTemplate.png"
-          cp "$ROOT/desktop/branding/trayTemplate_active.png" "$TMP_DIR/public/trayTemplate_active.png"
-          cp "$ROOT/desktop/branding/tray_dark.png" "$TMP_DIR/public/tray_dark.png"
-          cp "$ROOT/desktop/branding/tray_dark_active.png" "$TMP_DIR/public/tray_dark_active.png"
-
-          mkdir -p "$TMP_DIR/public/assets/windows"
-          cp -R "$ROOT/desktop/branding/windows/"* "$TMP_DIR/public/assets/windows/"
+          node "$ROOT/desktop/apply-branding.cjs" \
+            --repo-root "$ROOT" \
+            --project-root "$TMP_DIR" \
+            --target msix
 
           cd "$TMP_DIR"
           npm ci
