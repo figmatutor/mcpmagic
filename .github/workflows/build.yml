@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 jobs:
   inspect:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Inspect certificate dates and identities
         shell: bash
@@ -18,6 +18,6 @@ jobs:
             if [ "$kind" = signing ]; then blob="$SIGNING_P12"; else blob="$INSTALLER_P12"; fi
             printf '%s' "$blob" | base64 --decode > "$RUNNER_TEMP/$kind.p12"
             echo "$kind certificate:"
-            openssl pkcs12 -in "$RUNNER_TEMP/$kind.p12" -passin env:P12_PASSWORD -clcerts -nokeys | openssl x509 -noout -dates -fingerprint -sha1
+            openssl pkcs12 -legacy -in "$RUNNER_TEMP/$kind.p12" -passin env:P12_PASSWORD -clcerts -nokeys | openssl x509 -noout -dates -fingerprint -sha1
             rm -f "$RUNNER_TEMP/$kind.p12"
           done
