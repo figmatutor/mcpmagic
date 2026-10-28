@@ -85,7 +85,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Validate app runtime secrets
         shell: bash
@@ -247,7 +247,10 @@ jobs:
             fi
           done
 
-          wait "$BUILD_PID"
+          if ! wait "$BUILD_PID"; then
+            tail -n 300 "$ROOT/artifacts/mas-make.log"
+            exit 1
+          fi
           cat "$ROOT/artifacts/mas-make.log"
 
           if ! find "$TMP_DIR/out/make" -name "*-universal.pkg" -print -quit | grep -q .; then
@@ -339,7 +342,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Validate app runtime secrets
         shell: bash
