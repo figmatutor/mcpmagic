@@ -12,10 +12,18 @@ on:
         required: false
         default: false
         type: boolean
+      publish_release:
+        description: Publish the packages to GitHub Releases
+        required: false
+        default: true
+        type: boolean
 
 concurrency:
   group: build-desktop
   cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22'
 
 jobs:
   resolve-version:
@@ -80,12 +88,12 @@ jobs:
       PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Validate app runtime secrets
         shell: bash
@@ -264,7 +272,7 @@ jobs:
           rm -rf "$TMP_DIR"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: mas-artifacts
           path: artifacts/**
@@ -285,7 +293,7 @@ jobs:
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
     steps:
       - name: Download MAS artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: mas-artifacts
           path: artifacts
@@ -334,12 +342,12 @@ jobs:
       MSIX_PACKAGE_NAME: ${{ secrets.MSIX_PACKAGE_NAME }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Validate app runtime secrets
         shell: bash
@@ -584,7 +592,7 @@ jobs:
           rm -rf "$TMP_DIR"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: msix-artifacts
           path: artifacts/**
@@ -606,13 +614,13 @@ jobs:
     if: ${{ always() && needs.build-mas.result == 'success' && (needs['upload-mas'].result == 'success' || needs['upload-mas'].result == 'skipped') && needs.build-msix.result == 'success' }}
     steps:
       - name: Download MAS artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: mas-artifacts
           path: artifacts/mas
 
       - name: Download MSIX artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: msix-artifacts
           path: artifacts/msix
@@ -661,7 +669,8 @@ jobs:
           cp "$MSIX_SRC" "release-assets/MCP.Magic-${VERSION}.msix"
 
       - name: Upload release
-        uses: softprops/action-gh-release@v2
+        if: ${{ inputs.publish_release }}
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.version.outputs.version }}
           files: |
